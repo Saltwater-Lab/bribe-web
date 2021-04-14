@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+  <title>BRIBE</title>
+  <meta name="description" content="A cross-chain liquidity mining and vote delegation protocol for Algo stablecoins">
+  <meta name="keywords" content="{{$metaKeywords}}">
+
+  <link rel="shortcut icon" type="image/png" href="src/img/favicon.png" />
+
+  <link rel="stylesheet" rel="preload" href="src/css/fonts.min.css">
+  <link rel="stylesheet" href="src/css/styles.min.css">
+  <style>
+    #appParent {
+      opacity: 0;
+      transition: .5s ease;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="appParent">
+
+    <div id="app">
+      <div class="header-container">
+        <div class="header">
+          <a id="homeTrigger" style="margin: auto;display: grid;align-items: center;" href="">
+            <svg class="logo bribe-logo" style="height: 3rem;" clip-rule="evenodd" fill-rule="evenodd"
+              stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 275 275" xmlns="http://www.w3.org/2000/svg">
+              <path d="m0 0h274.235v274.235h-274.235z" fill="none" />
+              <g fill="#fff" transform="matrix(.182823 0 0 .182823 .00033 -.000223)">
+                <path
+                  d="m1045.99 640.903c10.27-5.667 52.69-24.612 73.73 34.972 76.56 211.089-18.88 459.805-224.844 566.155-64.9 33.52-134.232 49.81-202.823 50.9l-10.282.05c-147.274-.91-289.948-71.67-376.607-192.36-41.653-58.01 19.044-82.21 19.044-82.21l719.502-376.159z" />
+                <path
+                  d="m828.497 207.195c143.643 4.069 281.703 74.316 366.343 192.183 41.65 58.009-19.05 82.21-19.05 82.21l-719.497 376.161s-51.972 34.472-76.012-33.624l-3.463-9.922c-70.091-208.892 25.559-451.541 228.306-556.235 68.14-35.186 141.165-51.396 213.105-50.951z" />
+              </g>
+            </svg>
+          </a>
+          <div class="spacer"></div>
+          <div id="launching"></div>
+          <div id="menu" class="close-on-body-click">
+            <a onclick="mobileMenu(event)" class="menu-link mobile-menu-trigger">
+              <i class="fas fa-bars"></i>
+              <i class="fas fa-times"></i>
+            </a>
+            <div class="menu">
+              <a onclick="doStake('buy')" class="menu-link btn sec disabled-link" id="btn-buybribe">
+                <i class="fas fa-coins"></i>
+                &nbsp;Buy BRIBE
+              </a>
+              <a class="menu-link btn primary btn-connect disabled-link" id="btn-connect">
+                <i class="fas fa-plug"></i>
+                &nbsp;Connect Wallet
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <tag>
+          <h1>Meet BRIBE</h1>BRIBE is a cross-chain liquidity mining and<br>vote delegation protocol for Algo
+          stablecoins
+        </tag>
+      </div>
+
+      <div>
+        <div id="stakeControllerParent">
+          <div id="singleStake" class="stake-ui-container active">
+            <h1>
+              Deposit<span class="this-tok-name"></span> and Earn BRIBE
+            </h1>
+            <div class="stake-organiser -stats-flex">
+              <div class="stats">
+                <span class="stat -pc"><i class="fas fa-dollar-sign"></i><span class="staked-pair-balance-holder"
+                    id="stakedStatistic">5,850,022</span></span>
+                <small>Total Staked</small>
+              </div>
+              <div class="stats">
+                <span class="stat -pc"><span class="apy-holder" id="singleAPY">120</span><i
+                    class="fas fa-percentage"></i></span>
+                <small>APY</small>
+              </div>
+            </div>
+            <div id="combinedCoinViewSingle" class="processed-coin-view"></div>
+
+            <div class="stake-organiser">
+              <small>Your Stake: <i class="fas fa-dollar-sign"></i><span id="stakedSingle">0.000000</span></small>
+            </div>
+            <div class="-alt-chan-date">
+              <div class="stake-organiser -fx-tab">
+                <small>Start Date:</small>
+                <small class="-opening-date-tag"><i class="fas fa-ellipsis-h"></i></small>
+                <small>End Date:</small>
+                <small class="-opening-date-tag"><i class="fas fa-ellipsis-h"></i></small>
+              </div>
+            </div>
+
+            <div class="input-organiser" >
+              <input placeholder="" class="clean-input" id="tb-fei-amount">
+              <label><i class="fas fa-arrow-right"></i>Amount</label>
+              <div id="singleStakeCoinChoice" class="option-dropdown">
+                <div class="current-choice"></div>
+                <div class="options -stakeController">
+                  <label class="active" value="bribe-t">
+                    <img src="src/img/symbols/fei.svg" class="-icon -build-in-icon">
+                    <span class="label-text">FEI</span>
+                  </label>
+                  <!-- <label class="" value="usd-t">
+                    <img src="src/img/symbols/usdt.png" class="-icon -build-in-icon">
+                    <span class="label-text">USD-T</span>
+                  </label>
+                  <label class="" value="usd-c">
+                    <img src="src/img/symbols/usdc.png" class="-icon -build-in-icon">
+                    <span class="label-text">USD-C</span>
+                  </label> -->
+                </div>
+              </div>
+            </div>
+
+            <div class="stake-organiser -fx-tab">
+              <small>BRIBE Rewards: <i class="fas fa-dollar-sign"></i><span
+                  id="pairRewardsValue">0.000000</span></small>
+              <small onclick="performClaim(this)" class="claim-reward-balance"><i
+                  class="fas fa-star"></i>&nbsp;Claim</small>
+            </div>
+
+            <div class="stake-organiser -btn-flex">
+              <a class="btn primary disabled-link" onclick="doStake('deposit')">
+                Deposit
+              </a>
+              <a class="btn sec disabled-link" onclick="doStake('withdraw')">
+                Withdraw
+              </a>
+            </div>
+          </div>
+
+          <div class="stake-ui-container -pair-stake-tag-parent">
+            <h1>
+              Deposit<span class="this-tok-name"></span> and Earn BRIBE
+            </h1>
+            <div class="stake-organiser -stats-flex">
+              <div class="stats">
+                <span class="stat -pc"><i class="fas fa-dollar-sign"></i><span class="staked-pair-balance-holder"
+                    id="stakedStatisticPool1">5,850,022</span></span>
+                <small>Total Staked</small>
+              </div>
+              <div class="stats">
+                <span class="stat -pc"><span class="apy-holder" id="poolAPY1">120</span><i
+                    class="fas fa-percentage"></i></span>
+                <small>APY</small>
+              </div>
+            </div>
+            <div id="combinedCoinView1" class="processed-coin-view"></div>
+
+            <div class="stake-organiser">
+              <small>Your Stake: <i class="fas fa-dollar-sign"></i><span id="stakedPair1">0.000000</span></small>
+            </div>
+            <div class="-alt-chan-date">
+
+              <div class="stake-organiser -fx-tab">
+                <small>Start Date:</small>
+                <small class="-opening-date-tag"><i class="fas fa-ellipsis-h"></i></small>
+                <small>End Date:</small>
+                <small class="-opening-date-tag"><i class="fas fa-ellipsis-h"></i></small>
+              </div>
+            </div>
+
+            <div class="input-organiser" style="position: relative;z-index: 4;margin-bottom: 1rem">
+              <input placeholder="" class="clean-input">
+              <label><i class="fas fa-arrow-right"></i>Amount</label>
+              <div id="pairedStakeCoinChoice1" class="option-dropdown">
+                <div class="current-choice"></div>
+                <div class="options -stakeController">
+                  <label class="active" value="AB">
+                    <img src="src/img/symbols/fei.svg" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/bribe.png" class="-icon -build-in-icon">
+                    <span class="label-text">FEI-BRIBE</span>
+                  </label>
+                  <!-- <label class="" value="CD">
+                    <img src="src/img/symbols/z2.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z9.png" class="-icon -build-in-icon">
+                    <span class="label-text">CD-T</span>
+                  </label>
+                  <label class="" value="EF">
+                    <img src="src/img/symbols/z3.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z10.png" class="-icon -build-in-icon">
+                    <span class="label-text">EF-T</span>
+                  </label>
+                  <label class="" value="GH">
+                    <img src="src/img/symbols/z4.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z11.png" class="-icon -build-in-icon">
+                    <span class="label-text">GH-T</span>
+                  </label>
+                  <label class="" value="IJ">
+                    <img src="src/img/symbols/z5.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z12.png" class="-icon -build-in-icon">
+                    <span class="label-text">IJ-T</span>
+                  </label>
+                  <label class="" value="KL">
+                    <img src="src/img/symbols/z6.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z13.png" class="-icon -build-in-icon">
+                    <span class="label-text">KL-T</span>
+                  </label> -->
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="stake-organiser -fx-tab">
+              <small>BRIBE Rewards: <i class="fas fa-dollar-sign"></i><span
+                  id="pairRewardsValue1">0.000000</span></small>
+              <small onclick="performClaim(this)" class="claim-reward-balance"><i
+                  class="fas fa-star"></i>&nbsp;Claim</small>
+            </div>
+
+            <div onclick="doStake('uniswap')" class="stake-organiser -small-buy-trig-uniswap">
+              Provide liquidity to<span class="this-tok-name"></span> pair on Uniswap
+            </div>
+
+            <div class="stake-organiser -btn-flex">
+              <a class="btn primary disabled-link" onclick="doStake('deposit')">
+                Deposit
+              </a>
+              <a class="btn sec disabled-link" onclick="doStake('withdraw')">
+                Withdraw
+              </a>
+            </div>
+          </div>
+
+
+          <div class="stake-ui-container -pair-stake-tag-parent">
+            <h1>
+              Deposit<span class="this-tok-name"></span> and Earn BRIBE
+            </h1>
+            <div class="stake-organiser -stats-flex">
+              <div class="stats">
+                <span class="stat -pc"><i class="fas fa-dollar-sign"></i><span class="staked-pair-balance-holder"
+                    id="stakedStatisticPool2">5,850,022</span></span>
+                <small>Total Staked</small>
+              </div>
+              <div class="stats">
+                <span class="stat -pc"><span class="apy-holder" id="poolAPY2">120</span><i
+                    class="fas fa-percentage"></i></span>
+                <small>APY</small>
+              </div>
+            </div>
+            <div id="combinedCoinView2" class="processed-coin-view"></div>
+
+            <div class="stake-organiser">
+              <small>Your Stake: <i class="fas fa-dollar-sign"></i><span id="stakedPair2">0.000000</span></small>
+            </div>
+            <div class="-alt-chan-date">
+
+              <div class="stake-organiser -fx-tab">
+                <small>Start Date:</small>
+                <small class="-opening-date-tag"><i class="fas fa-ellipsis-h"></i></small>
+                <small>End Date:</small>
+                <small class="-opening-date-tag"><i class="fas fa-ellipsis-h"></i></small>
+              </div>
+            </div>
+
+            <div class="input-organiser" style="position: relative;z-index: 5;margin-bottom: 1rem">
+              <input placeholder="" class="clean-input">
+              <label><i class="fas fa-arrow-right"></i>Amount</label>
+              <div id="pairedStakeCoinChoice2" class="option-dropdown">
+                <div class="current-choice"></div>
+                <div class="options -stakeController">
+                  <label class="active" value="MN">
+                    <img src="src/img/symbols/bribe.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/eth.png" class="-icon -build-in-icon">
+                    <span class="label-text">BRIBE-ETH</span>
+                  </label>
+                  <!-- <label class="" value="OP">
+                    <img src="src/img/symbols/z16.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z17.png" class="-icon -build-in-icon">
+                    <span class="label-text">OP-T</span>
+                  </label>
+                  <label class="" value="QR">
+                    <img src="src/img/symbols/z18.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z19.png" class="-icon -build-in-icon">
+                    <span class="label-text">QR-T</span>
+                  </label>
+                  <label class="" value="ST">
+                    <img src="src/img/symbols/z20.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z21.png" class="-icon -build-in-icon">
+                    <span class="label-text">ST-T</span>
+                  </label>
+                  <label class="" value="UV">
+                    <img src="src/img/symbols/z22.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z12.png" class="-icon -build-in-icon">
+                    <span class="label-text">UV-T</span>
+                  </label>
+                  <label class="" value="WX">
+                    <img src="src/img/symbols/z23.png" class="-icon -build-in-icon">
+                    <img src="src/img/symbols/z24.png" class="-icon -build-in-icon">
+                    <span class="label-text">WX-T</span>
+                  </label> -->
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="stake-organiser -fx-tab">
+              <small>BRIBE Rewards: <i class="fas fa-dollar-sign"></i><span
+                  id="pairRewardsValue2">0.000000</span></small>
+              <small onclick="performClaim(this)" class="claim-reward-balance"><i
+                  class="fas fa-star"></i>&nbsp;Claim</small>
+            </div>
+
+            <div onclick="doStake('uniswap')" class="stake-organiser -small-buy-trig-uniswap">
+              Provide liquidity to<span class="this-tok-name"></span> pair on Uniswap
+            </div>
+
+            <div class="stake-organiser -btn-flex">
+              <a class="btn primary disabled-link" onclick="doStake('deposit')">
+                Deposit
+              </a>
+              <a class="btn sec disabled-link" onclick="doStake('withdraw')">
+                Withdraw
+              </a>
+            </div>
+          </div>
+
+
+          <div class="showcase-text">
+            <h2>BRIBE Genesis Token Airdrop</h2>
+            <p>
+              Every address that participated in the Fei Genesis will be airdropped BRIBE token. <br>Details will be announced in our Medium, Twitter and Discord.
+            </p>
+          </div>
+
+          <div id="airdropToken" class="stake-ui-container">
+            <h1>
+              BRIBE Token Airdrop
+            </h1>
+            <div class="stake-organiser -stats-flex">
+              <div class="stats">
+                <span class="stat -pc"><span id="claimableBribe">5,850</span><i class="-m-l">BRIBE</i></span>
+                <small>Claimable BRIBE</small>
+              </div>
+              <div class="stats">
+                <span class="stat -pc"><span id="tokenBalance">1,024</span><i class="-m-l">BRIBE</i></span>
+                <small>BRIBE Balance</small>
+              </div>
+            </div>
+
+            <div class="stake-organiser -btn-flex">
+              <a class="btn primary disabled-link" onclick="doStake('redeem')">
+                Redeem
+              </a>
+            </div>
+          </div>
+
+          <p class="showcase-text">
+            BRIBE token is not launched yet.<br><i class="fas fa-exclamation-triangle"></i>&nbsp;<u>Please beware of
+              scams on Uniswap.</u><br>Official token address will be updated upon token generation
+          </p>
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+    <div class="footer-grid" id="footer">
+      <div class="link-flex">
+        <!-- <a href="#" title="email"><i class="fas fa-at"></i></a> -->
+        <a href="https://discord.gg/B3ASjjcPxD" title="telegram" target="_blank"><i class="fab fa-discord"></i></a>
+        <!-- <a href="#" title="telegram"><i class="fab fa-telegram-plane"></i></a>
+        <a href="#" title="discourse"><i class="fab fa-discourse"></i></a> -->
+        <a href="https://twitter.com/bribedefi" title="twitter" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://bribeprotocol.medium.com" title="medium" target="_blank"><i class="fab fa-medium-m"></i></a>
+        <!-- <a href="#" title="github"><i class="fab fa-github"></i></a> -->
+      </div>
+      <div class="spacer"></div>
+
+      <span class="copyrite"><i class="fas fa-copyright"></i> 2021 Bribe</span>
+    </div>
+
+  </div>
+
+
+  <script type="text/javascript" src="src/js/web3.min.js"></script>
+  <script type="text/javascript" src="src/js/index.js"></script>
+  <script type="text/javascript" src="src/js/index.u.min.js"></script>
+  <script type="text/javascript" src="src/js/index.min.js"></script>
+  <script type="text/javascript" src="src/js/fortmatic.js"></script>
+  <script type="text/javascript" src="./abi/abi.js"></script>
+  <script src="src/js/wallet-connect.js"></script>
+  <!-- TODO: MINIFY THE JS AND ADD MINIFIED LINKS HERE -->
+  <script type="text/javascript" src="src/js/scripts.js"></script>
+  <script type="text/javascript" src="src/js/not-launched-notice.min.js"></script>
+  <link rel="stylesheet" href="src/css/not-launched.min.css">
+  <script type="text/javascript" src="src/js/custom-countdown.min.js"></script>
+  <link rel="stylesheet" href="src/css/clock.min.css">
+
+</body>
+
+</html> 
