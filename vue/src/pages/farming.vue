@@ -19,7 +19,7 @@
           <span class="value">{{ numberWithSpaces(toFixedTwo(rewardPerBlock * 5760 * 15 / 1e18)) }}</span>
         </div> -->
         BRIBE is a cross-chain liquidity mining and <br />
-        vote delegation protocol for Algo stablecoins
+        vote delegation protocol for algorithmic stablecoins
       </div>
       <!-- <h2 class="farm-label">Add LPs BRIBE/ETH from Uniswap pool to farm BRIBE!</h2> -->
       <div class="balance">

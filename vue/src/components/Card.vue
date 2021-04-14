@@ -9,11 +9,11 @@
       <div class="stake-organiser -stats-flex">
         <div class="stats">
           <span class="stat -pc"><i class="fas fa-dollar-sign"></i><span class="staked-pair-balance-holder"
-              id="stakedStatistic">5,850,022 </span></span>
+              id="stakedStatistic">-,---,--- </span></span>
           <small>Total Staked</small>
         </div>
         <div class="stats">
-          <span class="stat -pc"><span class="apy-holder" id="singleAPY">120</span><i
+          <span class="stat -pc"><span class="apy-holder" id="singleAPY">---</span><i
               class="fas fa-percentage"></i></span>
           <small> APY</small>
         </div>

@@ -1,22 +1,32 @@
 <template>
   <div class="info info--pt">
     <div class="container">
-      <div class="title">Farming</div>
+      <div class="title">About Bribe</div>
       <div class="info__block">
         <div class="info__about">
-          <div class="title title--small">What is Roobee?</div>
-          <div class="info__about-text">Roobee (ROOBEE) is a blockchain-based investment platform that allows users to invest in products from both the traditional and crypto markets. The platform is under active development and is already operational. Behind the platform is a team of developers who won prizes in hackathons, including the 2017 and 2019 ETHWaterloo hackathons held in Canada by ETHGlobal. The Roobee community already has 400,000 users from all over the world. 
+          <div class="info__about-text">
+            Bribe is a cross-chain liquidity protocol for algorithmic stablecoins. The mission of Bribe is to give stablecoin holders an opportunity to maximize yield in the cross-chain ecosystem. At present, Bribe deploys the first single-token farming pool of Fei stablecoin.
           </div>
-          <div class="info__about-text">The mission of Roobee is to give any person with any level income an opportunity to invest starting just from $10 in investment products that are only available to big institutional players, qualified investors, millionaires, and funds. With the help of the Roobee platform, the goal is to empower people from all over the world to invest in any of the many investment products available on the platform: crypto, stocks, ETFs, IPOs, real estate, and more. To find more information you can visit the platform <a target="blank" href="https://roobee.io/">website</a>.
+          <div class="title title--small">$BRIBE Tokenomics</div>
+          <div class="info__about-text">Bribe Protocol is a firm supporter of fair launch. There is no private sale or VC allocation. BRIBE tokens will be distributed to the community during 12 months starting from the launch date.<br>
+            Total supply: 1,000,000 BRIBE<br>
+            Airdrop to Fei Genesis participants: 60,000 BRIBE<br>
+            Community Airdrop (early supporters, social media campaigns): 5,000 BRIBE<br>
+            Initial LP airdrop: 10,000 BRIBE<br>
+            Reserve for future airdrops: 25,000<br>
+            <br>
+            100,000 BRIBE farming rewards will be distributed during the first month.<br>
+            Daily Fei Pool Rewards: 5,000 BRIBE<br>
+            Daily Fei-Bribe Pool Rewards: 8,333 BRIBE<br>
+            Daily ETH-Bribe Pool Rewards: 20,000 BRIBE<br>
           </div>
-          <div class="title title--small">What is Roobee.finance?</div>
-          <div class="info__about-text">Roobee.Finance is a platform that aims to reward the providers of Uniswap ROOBEE-ETH liquidity. All Uniswap liquidity providers can use their ROOBEE-ETH LPs to farm ROOBEE tokens.<br>
-            Tokens allocated for farming: 1,800,000 ROOBEE<br>
-            Daily ROOBEE Pool Rewards: 30,000 ROOBEE<br>
-            Farming Period: 60 days
-          </div>
-          <div class="title title--small">How can I buy Roobee (ROOBEE)?</div>
-          <div class="info__about-text">You can purchase ROOBEE on a crypto exchange. To see a complete list of crypto exchanges and trading pairs, click on the "Market Pairs" on Coinmarketcap. The ROOBEE token has been traded on major crypto exchanges such as KuCoin, HitBTC, EXMO, BitForex, Liquid, Livecoin, and Yobit since 2019. You can store ROOBEE on an exchange or in your crypto wallet. To read about the platform in more detail, please visit <a target="blank" href="https://roobee.io/">Roobee.io</a></div>
+          <div class="title title--small">Protocol Fees</div>
+          <div class="info__about-text">Fei pool charges 1% withdrawal fee paid in Fei. LP pools do not charge fees. Collected fees will be used to buyback BRIBE in the open market on a weekly basis. The protocol fees can be adjusted or removed by the governance vote of BRIBE holders.</div>
+          <div class="title title--small">Where can I buy BRIBE?</div>
+          <div class="info__about-text">BRIBE token is not launched yet. Any claims of BRIBE tokens on Uniswap or other exchanges are scams.</div>
+          <!--
+          <div class="info__about-text">You can purchase BRIBE on Uniswap. The token address is <a></a></div>
+          -->
         </div>
       </div>
     </div>

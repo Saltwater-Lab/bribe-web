@@ -1,33 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import Home from '../pages/index'
 import Farming from '../pages/farming'
-// import About from '../pages/about'
+import About from '../pages/about'
+import BSC from '../pages/BSC'
 
 Vue.use(VueRouter)
 
 const routes = [
-    // {
-    //     path: '/',
-    //     name: 'index',
-    //     component: Home,
-    //     meta: {
-    //       title: 'RoobeeFinance',
-    //       metaTags: [
-    //         {
-    //           name: 'description',
-    //           content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
-    //         },
-    //         {
-    //           property: 'og:description',
-    //           content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
-    //         }
-    //       ]
-    //     }
-    // },
     {
         path: '/',
-        name: 'index',
+        name: 'farming',
         component: Farming,
         meta: {
           title: 'Bribe',
@@ -43,24 +25,42 @@ const routes = [
           ]
         }
     },
-    // {
-    //     path: '/about',
-    //     name: 'about',
-    //     component: About,
-    //     meta: {
-    //       title: 'RoobeeFinance',
-    //       metaTags: [
-    //         {
-    //           name: 'description',
-    //           content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
-    //         },
-    //         {
-    //           property: 'og:description',
-    //           content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
-    //         }
-    //       ]
-    //     }
-    // }
+    {
+        path: '/about',
+        name: 'about',
+        component: About,
+        meta: {
+          title: 'RoobeeFinance',
+          metaTags: [
+            {
+              name: 'description',
+              content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
+            },
+            {
+              property: 'og:description',
+              content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
+            }
+          ]
+        }
+    },
+    {
+        path: '/bsc',
+        name: 'bsc',
+        component: BSC,
+        meta: {
+          title: 'RoobeeFinance',
+          metaTags: [
+            {
+              name: 'description',
+              content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
+            },
+            {
+              property: 'og:description',
+              content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
+            }
+          ]
+        }
+    }
 ]
 
 const router = new VueRouter({

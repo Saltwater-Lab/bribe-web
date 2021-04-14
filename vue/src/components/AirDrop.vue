@@ -29,8 +29,12 @@
       </div>
 
       <div class="stake-organiser -btn-flex">
-        <a class="btn primary " @click="doStake('redeem')">
-          Redeem
+      
+        <a v-if="metamaskAccount" class="btn primary" @click="doStake('redeem')">
+          Claim
+        </a>
+        <a v-else class="btn primary">
+          Locked
         </a>
       </div>
     </div>
