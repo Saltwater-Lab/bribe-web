@@ -30,15 +30,15 @@ const routes = [
         name: 'about',
         component: About,
         meta: {
-          title: 'RoobeeFinance',
+          title: 'About Bribe',
           metaTags: [
             {
               name: 'description',
-              content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
+              content: 'Stake your FEI and Earn Bribe'
             },
             {
               property: 'og:description',
-              content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
+              content: 'Stake your FEI and Earn Bribe'
             }
           ]
         }
@@ -52,11 +52,11 @@ const routes = [
           metaTags: [
             {
               name: 'description',
-              content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
+              content: 'BRIBE on BSC | Upcoming'
             },
             {
               property: 'og:description',
-              content: 'The idea is simple, we give Roobee to liquidity providers of Roobee/ETH pool'
+              content: 'BRIBE on BSC | Upcoming'
             }
           ]
         }
