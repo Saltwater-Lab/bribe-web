@@ -48,12 +48,17 @@
         <span v-if="showUniswapMsg">Provide liquidity to {{ inputType }} pair on Uniswap</span>
         <!-- <span v-else><br /><br /></span> -->
       </div>
-      <div class="stake-organiser -btn-flex actions">
+      <div v-if="metamaskAccount&&isApproved(poolId)" class="stake-organiser -btn-flex actions">
         <a class="btn primary" @click="doStake('deposit')">
           Deposit
         </a>
         <a class="btn sec" @click="doStake('withdraw')">
           Withdraw
+        </a>
+      </div>
+      <div v-else class="stake-organiser -btn-flex actions">
+        <a class="btn primary" @click="approve(poolId)">
+          Approve
         </a>
       </div>
     </div>
@@ -68,10 +73,10 @@
 </template>
 <script>
 import moment from 'moment'
-import {mapState} from 'vuex'
+import {mapActions, mapState} from 'vuex'
 
 export default {
-  props: ['title', 'farmLink', 'topIcon', 'currencyIcon', 'currencyIcon2', 'dailyPool', 'finished', 'inputType'],
+  props: ['title', 'farmLink', 'topIcon', 'currencyIcon', 'currencyIcon2', 'dailyPool', 'finished', 'inputType', 'poolId'],
 
   data() {
     return {
@@ -87,8 +92,9 @@ export default {
   },
 
   computed: {
-    ...mapState(['rewardsEndIn']),
-    showUniswapMsg () {
+    ...mapState(['rewardsEndIn', 'metamaskAccount', 'isApproved']),
+    ...mapActions(['approve']),
+    showUniswapMsg () { // show uniswap LP token address
       return this.inputType.includes('-')
     }
   },

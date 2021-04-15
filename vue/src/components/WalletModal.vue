@@ -15,7 +15,7 @@
               </div>
               <div class="wallet-item__title">Metamask</div>
               <div class="wallet-item__button">
-                <button class="button button--yellow button--small" :class="{'button--green': metamaskAccount}" @click="connectAccount">{{ metamaskAccount ? metamaskAccount : (metamaskConnector && metamaskConnector.status == 'NOT_INSTALLED' ? 'Install' : 'Connect') }}
+                <button class="button button button--small" :class="{'button': metamaskAccount}" @click="connectAccount">{{ metamaskAccount ? metamaskAccount : (metamaskConnector && metamaskConnector.status == 'NOT_INSTALLED' ? 'Install' : 'Connect') }}
                 </button>
               </div>
             </div>
@@ -25,7 +25,7 @@
               </div>
               <div class="wallet-item__title">WalletConnect</div>
               <div class="wallet-item__button">
-                <button class="button button--yellow button--small ">Soon</button>
+                <button class="button button button--small ">Soon</button>
               </div>
             </div>
           </div>

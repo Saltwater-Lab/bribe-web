@@ -1,10 +1,29 @@
 # Bribe-Frontend
 
-## Color scheme
-Button #0DC4E0
-Button-hover #2b92a2
+## Smart Contact Configs
+Ropsten Testnet
 
-button change to rgb(117, 115, 241);
+need to set .env file
+
+fei pool 0x209120779A322aA0C26Bc15DF8d90be1aBc845ee
+
+fei-bribe pool 0xC806881Bfc22351AF2B67d4e025C1372e0F880E4
+
+bribe-eth pool 0xafa179EEbCB7010ff7Ec8eab2760dbA96B4B83Db
+
+fei token 0xFab46E002BbF0b4509813474841E0716E6730136 (get testnet token at https://erc20faucet.com/)
+
+bribe token 0xFE0A6ADbfA14C515Ee9D1bE26a1AA8252Dd1921E
+
+fei-bribe LP 0x8d2dfd9a3411d3765b3cc8119f9f1bbf7f77c620
+
+bribe-eth LP 0xb203a5e646c18c3afb1e5e6a341c1e718f7026c9
+
+### Deposit
+
+1. token.approve(spender, amount) spender is pool address, amount is "0xffffff..."
+
+2. pool.stake(amount)
 
 ## How to run
 

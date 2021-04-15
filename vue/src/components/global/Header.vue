@@ -11,7 +11,7 @@
           <router-link :to="{name: 'bsc'}" class="header__link">BSC Network</router-link>
         </nav>
         <div class="header__box">
-          <a href="#" class="button header__button" @click.prevent="showModal" :class="{'button--green': metamaskAccount}">{{ metamaskAccount ? `${metamaskAccount.substring(0, 6 + 2)}...${metamaskAccount.substring(42 - 6)}` : 'Unlock wallet' }}</a>
+          <a href="#" class="button header__button" @click.prevent="showModal" :class="{'button': metamaskAccount}">{{ metamaskAccount ? `${metamaskAccount.substring(0, 6 + 2)}...${metamaskAccount.substring(42 - 6)}` : 'Unlock wallet' }}</a>
           <!-- <div class="header__menu">
             <div class="header__menu-icon" @click="menuStatus =! menuStatus"></div>
             <transition name="fade">
