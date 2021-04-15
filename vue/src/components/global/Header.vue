@@ -2,7 +2,7 @@
   <header class="header">
     <div class="container">
       <div class="header__inner">
-        <router-link :to="{name: 'index'}" class="header__logo">
+        <router-link :to="{name: 'farming'}" class="header__logo">
           <img src="../../assets/images/logo.svg" alt="bribe">
         </router-link>
         <nav class="header__nav">
@@ -12,17 +12,17 @@
         </nav>
         <div class="header__box">
           <a href="#" class="button header__button" @click.prevent="showModal" :class="{'button': metamaskAccount}">{{ metamaskAccount ? `${metamaskAccount.substring(0, 6 + 2)}...${metamaskAccount.substring(42 - 6)}` : 'Unlock wallet' }}</a>
-          <!-- <div class="header__menu">
+          <div class="header__menu">
             <div class="header__menu-icon" @click="menuStatus =! menuStatus"></div>
             <transition name="fade">
               <div class="header__list" v-if="menuStatus">
-                <router-link :to="{name: 'index'}" class="header__link header__link--active">Home</router-link>
+                <!-- <router-link :to="{name: 'index'}" class="header__link header__link--active">Home</router-link> -->
                 <router-link :to="{name: 'farming'}" class="header__link">Farming</router-link>
                 <router-link :to="{name: 'about'}" class="header__link">About</router-link>
-                <a href="https://bsc.bribe.finance/" class="header__link">BSC Network</a>
+                <router-link :to="{name: 'bsc'}" class="header__link">BSC Network</router-link>
               </div>
             </transition>
-          </div> -->
+          </div>
         </div>
       </div>
     </div>
@@ -54,10 +54,16 @@ export default {
     ...mapState(['metamaskAccount'])
   },
 
+  watch:{
+    $route (){
+      this.menuStatus = false;
+    }
+  },
+
   methods: {
     showModal: function () {
       this.$refs.modal.show = true
-    },
+    }
   }
 }
 </script>
