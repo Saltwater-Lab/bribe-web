@@ -24,9 +24,9 @@
       <!-- <h2 class="farm-label">Add LPs BRIBE/ETH from Uniswap pool to farm BRIBE!</h2> -->
       <div class="balance">
         <div class="balance__inner cards-row">
-          <Card title="Deposit FEI & Earn BRIBE" input-type="FEI" farm-link="/farming_pancake" currency-icon="/pics/fei.svg" currency-icon2="" daily-pool="25 000" :finished="false" />
-          <Card title="Deposit FEI-BRIBE & Earn BRIBE" input-type="FEI-BRIBE" farm-link="/farming_bnb" top-icon="/pics/burger.png" currency-icon="/pics/fei.svg" currency-icon2="/pics/bribe.png" daily-pool="25 000" />
-          <Card title="Deposit BRIBE-ETH & Earn BRIBE" input-type="BRIBE-ETH" farm-link="/farming_burger" top-icon="/pics/burger.png" currency-icon="/pics/bribe.png" currency-icon2="/pics/eth.png" daily-pool="25 000" />
+          <Card title="Deposit FEI & Earn BRIBE" input-type="FEI" farm-link="/farming_pancake" currency-icon="/pics/fei.png" currency-icon2="" daily-pool="25 000" :finished="false" />
+          <Card title="Deposit FEI-BRIBE & Earn BRIBE" input-type="FEI-BRIBE" farm-link="/farming_bnb" top-icon="/pics/fei.png" currency-icon="/pics/fei.png" currency-icon2="/pics/bribe.png" daily-pool="25 000" />
+          <Card title="Deposit BRIBE-ETH & Earn BRIBE" input-type="BRIBE-ETH" farm-link="/farming_burger" top-icon="/pics/bribe.png" currency-icon="/pics/bribe.png" currency-icon2="/pics/eth.png" daily-pool="25 000" />
         </div>
         <div class="balance__info">
           <AirDrop />

@@ -1,5 +1,11 @@
 # Bribe-Frontend
 
+## Color scheme
+Button #0DC4E0
+Button-hover #2b92a2
+
+button change to rgb(117, 115, 241);
+
 ## How to run
 
 - run `yarn`

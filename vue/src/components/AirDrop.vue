@@ -3,7 +3,7 @@
     <div class="showcase-text">
       <h2>BRIBE Genesis Token Airdrop</h2>
       <p>
-        Every address that participated in the Fei Genesis will be airdropped BRIBE token. <br>Details will be announced in our Medium, Twitter and Discord.
+        Every address that participated in Fei Genesis will be airdropped BRIBE token. <br>Details will be announced in our social channels.
       </p>
     </div>
 
@@ -98,13 +98,13 @@ export default {
   line-height: 1.5;
   font-size: 1.4rem;
   font-weight: 100;
-  color: #8b8b8b;
+  color: #4b4b4b;
   width: 100%;
 }
 .showcase-text u {
   cursor: pointer;
 }
-.stake-ui-container::before {
+/* .stake-ui-container::before {
   content: "";
   position: absolute;
   top: 1px;
@@ -113,23 +113,24 @@ export default {
   width: calc(100% - 2px);
   background: #fff;
   z-index: -1;
-  border-radius: 2rem;
-}
+  border-radius: 1rem;
+} */
 .stake-ui-container > :last-child {
   margin-top: auto;
 }
 .stake-ui-container {
   transition: .2s ease;
-  border-radius: 2rem;
+  border-radius: 1rem;
   padding: 1rem 1.5rem .5rem 1.5rem;
   margin: 2rem auto;
   max-width: 95vw;
   width: calc(350px - 2rem);
-  background: linear-gradient(180deg,#0296f6,#2e2e2e);
+  background: rgba(255,255,255,0.78);
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
+  box-shadow: 3px 3px 10px #eecccc;
 }
 .stake-ui-container h1 {
   text-align: center;
@@ -212,13 +213,13 @@ export default {
 .btn {
     padding: .75rem 1.5rem;
     line-height: 1;
-    background-color: #0DC4E0;
+    background-color: black;
     color:#fff;
     display: flex;
     flex-direction: row;
     align-items: baseline;
     text-align: center;
-    border-radius: 100px;
+    border-radius: 10px;
     font-weight: 400;
     transition: .1s ease;
     position: relative;
@@ -228,7 +229,7 @@ export default {
     transition: .2s;
 }
 .btn:hover {
-  background: #2b92a2;
+  background: linear-gradient(to top right, #9395f7, #cf9ef0);
 }
 
 </style>

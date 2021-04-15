@@ -119,13 +119,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// .card::before {
+//   content: "";
+//   position: absolute;
+//   top: 1px;
+//   left: 1px;
+//   height: calc(100% - 2px);
+//   width: calc(100% - 2px);
+//   background: #fff;
+//   z-index: -1;
+//   border-radius: 1rem;
+// }
+
 .card {
-    background: #fff;
-    border: 2px solid rgba(107,251,147,.5);
-    border-radius: 10px;
+    background: rgba(255,255,255,0.78);
+    border-radius: 1rem;
     margin: 20px;
     position: relative;
     min-width: 359px;
+    z-index: 1;
+    box-shadow: 2px 2px 10px #eedddd;
 }
 
 .card.finished:after {
@@ -156,7 +169,7 @@ export default {
     color: #000;
 }
 .card__header {
-  border-bottom: 2px solid #6bfb93;
+  border-bottom: 1px solid #0296f6;
 }
 .card__body, .card__footer, .card__header, .card__rewards, .card__title {
     text-align: center;
@@ -287,10 +300,13 @@ export default {
     transition: .2s ease;
     opacity: .7;
     box-shadow: 0 0 0 1px;
-    border-radius: 100px;
+    border-radius: 4px;
     padding: .2rem .4rem;
     cursor: pointer;
     line-height: 1;
+}
+.claim-reward-balance:hover {
+    background: #acadf8;
 }
 .-btn-flex {
     display: flex;
@@ -309,13 +325,13 @@ export default {
 .btn {
     padding: .75rem 1.5rem;
     line-height: 1;
-    background-color: #0DC4E0;
+    background-color:black;
     color:#fff;
     display: flex;
     flex-direction: row;
     align-items: baseline;
     text-align: center;
-    border-radius: 100px;
+    border-radius: 10px;
     font-weight: 400;
     transition: .1s ease;
     position: relative;
@@ -325,17 +341,17 @@ export default {
     transition: .2s;
 }
 .btn:hover {
-  background: #2b92a2;
+  background: linear-gradient(to top right, #9395f7, #cf9ef0);
 }
 
 .btn.sec {
     background: 0 0;
-    box-shadow: inset 0 0 0 2px #0DC4E0;
-    color: #0DC4E0
+    border:2px solid black;
+    color: black;
 }
 .btn.sec:hover {
-  color: #2b92a2;
-  box-shadow: inset 0 0 0 2px #2b92a2;
+  color: #cf9ef0;
+    border:2px solid #cf9ef0;
 }
 
 .uniswap-msg {
