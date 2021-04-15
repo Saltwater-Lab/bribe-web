@@ -93,13 +93,13 @@ export default {
 
   computed: {
     ...mapState(['rewardsEndIn', 'metamaskAccount', 'isApproved']),
-    ...mapActions(['approve']),
     showUniswapMsg () { // show uniswap LP token address
       return this.inputType.includes('-')
     }
   },
 
   methods: {
+    ...mapActions(['approve']),
     startFinishPeriodTimer() {
       if (this.rewardsEndIn - moment().unix() > 0) {
         this.finishPeriodInterval = setInterval(() => {

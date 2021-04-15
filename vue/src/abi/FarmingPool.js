@@ -1,4 +1,3 @@
-export default farmingPoolABI;
 var farmingPoolABI = [
     {
       "inputs": [
@@ -825,3 +824,5 @@ var farmingPoolABI = [
       "type": "function"
     }
   ];
+
+export default farmingPoolABI;

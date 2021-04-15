@@ -1,4 +1,3 @@
-export default bribeTokenABI
 var bribeTokenABI = [
     {
       "inputs": [],
@@ -935,3 +934,5 @@ var bribeTokenABI = [
       "type": "function"
     }
   ]
+
+  export default bribeTokenABI;

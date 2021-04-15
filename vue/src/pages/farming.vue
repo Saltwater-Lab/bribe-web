@@ -64,7 +64,7 @@ export default {
 
   async created() {
     if (!this.firstEnter) {
-      await this.getRoobeeData();
+      //await this.getRoobeeData();
     }
     // if (!this.metamaskAccount) {
     //   this.$bus.$emit('open-wallet-modal');
@@ -80,7 +80,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['getRoobeeData', 'harvest', 'approve']),
+    ...mapActions(['harvest', 'approve']),
 
     showDepositModal() {
       this.$refs['deposit-modal'].show = true
