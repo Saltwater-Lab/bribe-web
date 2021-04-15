@@ -48,7 +48,7 @@
         <span v-if="showUniswapMsg">Provide liquidity to {{ inputType }} pair on Uniswap</span>
         <!-- <span v-else><br /><br /></span> -->
       </div>
-      <div v-if="metamaskAccount&&isApproved(poolId)" class="stake-organiser -btn-flex actions">
+      <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions">
         <a class="btn primary" @click="doStake('deposit')">
           Deposit
         </a>
