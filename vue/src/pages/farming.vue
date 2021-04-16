@@ -4,7 +4,7 @@
       <!-- <div class="info__image">
         <img src="../assets/images/cat.png" alt="">
       </div> -->
-      <div class="title heading">Bribe Farms</div>
+      <div class="title heading">BRIBE FARM</div>
       <div class="farm-data subheading">
         <!-- <div class="farm-data__item">
           <h2 class="title">Est. APY</h2>
@@ -23,9 +23,9 @@
       <!-- <h2 class="farm-label">Add LPs BRIBE/ETH from Uniswap pool to farm BRIBE!</h2> -->
       <div class="balance">
         <div class="balance__inner cards-row">
-          <Card title="Deposit FEI & Earn BRIBE" pool-id=0 input-type="FEI" farm-link="/farming_pancake" currency-icon="/pics/fei.png" currency-icon2="" daily-pool="25 000" :finished="false" />
-          <Card title="Deposit FEI-BRIBE & Earn BRIBE" pool-id=1 input-type="FEI-BRIBE" farm-link="/farming_bnb" top-icon="/pics/fei.png" currency-icon="/pics/fei.png" currency-icon2="/pics/bribe.png" daily-pool="25 000" />
-          <Card title="Deposit BRIBE-ETH & Earn BRIBE" pool-id=2 input-type="BRIBE-ETH" farm-link="/farming_burger" top-icon="/pics/bribe.png" currency-icon="/pics/bribe.png" currency-icon2="/pics/eth.png" daily-pool="25 000" />
+          <Card title="FEI Pool" pool-id=0 input-type="FEI" farm-link="/farming_pancake" currency-icon="/pics/fei.png" currency-icon2="" daily-pool="25 000" :finished="false" />
+          <Card title="FEI-BRIBE LP Pool" pool-id=1 input-type="FEI-BRIBE" farm-link="/farming_bnb" top-icon="/pics/fei.png" currency-icon="/pics/fei.png" currency-icon2="/pics/bribe.png" daily-pool="25 000" />
+          <Card title="ETH-BRIBE LP Pool" pool-id=2 input-type="BRIBE-ETH" farm-link="/farming_burger" top-icon="/pics/bribe.png" currency-icon="/pics/bribe.png" currency-icon2="/pics/eth.png" daily-pool="25 000" />
         </div>
         <div class="balance__info">
           <p class="showcase-text">
@@ -105,10 +105,14 @@ export default {
 </script>
 <style scoped>
 .heading {
-  font-size: 60px;
+  
+  font-family: Roboto-Bold;
+  font-weight:500;
+  font-size: 56px;
+  letter-spacing: 6px;
 }
 .subheading {
-  font-size: 24px;
+  font-size: 20px;
 }
 .center {
   text-align: center;

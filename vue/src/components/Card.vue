@@ -233,25 +233,34 @@ export default {
     line-height: 140%;
     color: #000;
 }
-.card__header {
-  border-bottom: 1px solid #0296f6;
-}
+
 .card__body, .card__footer, .card__header, .card__rewards, .card__title {
     text-align: center;
 }
 .card__title {
-    font-weight: 500;
+    font-weight: 600;
     font-size: 18px;
     line-height: 140%;
     color: #000;
     margin: 0;
+}
+	
+.card__title::after {
+  content: "";
+  display: block;
+  height: 1px;
+  width: 90%;
+  background: #000000;
+  position: absolute;
+  opacity: 0.9;
+  margin-top: 10px;
 }
 .card__body, .card__currencies {
     display: flex;
     align-items: center;
 }
 .card__body {
-    padding: 25px 20px 8px;
+    padding: 5px 20px 8px;
     flex-direction: column;
 }
 
@@ -325,6 +334,7 @@ export default {
 .stake-organiser small,
 .-small-buy-trig-uniswap{
   font-size: .9rem;
+  font-weight: 500;
 }
 .stake-organiser.-fx-tab {
   display: grid;

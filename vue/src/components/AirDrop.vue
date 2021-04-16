@@ -97,9 +97,9 @@ export default {
   /* margin: 4rem 2rem; */
   text-align: center;
   line-height: 1.5;
-  font-size: 1.4rem;
+  font-size: 1.0rem;
   font-weight: 100;
-  color: #4b4b4b;
+  color: #2e2e2e;
   width: 100%;
 }
 .showcase-text u {
@@ -148,10 +148,10 @@ export default {
   height: 1px;
   width: calc(100% + 2rem);
   bottom: -1rem;
-  background: #0296f6;
+  background: #000000;
   position: absolute;
   left: -1rem;
-  opacity: .3;
+  opacity: .5;
 }
 
 .center {
