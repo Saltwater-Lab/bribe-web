@@ -37,7 +37,7 @@
 
       <div class="stake-organiser -fx-tab">
         <small class="left">BRIBE Rewards: <i class="fas fa-dollar-sign"></i><span
-            id="pairRewardsValue">0.000000</span></small>
+            id="pairRewardsValue">{{ earned[poolId] | amountFormat}}</span></small>
         <small @click="doClaim()" class="claim-reward-balance"><i
             class="fas fa-star"></i>&nbsp;Claim</small>
       </div>
@@ -84,11 +84,16 @@
       
       </div>
       -->
+
+      <!-- <div>
+        {{isApproved}}
+      </div> -->
     </div>
   </div>
 </template>
 <script>
 import {mapActions, mapState} from 'vuex'
+import formatter from '@/utils/amountFormatter'
 
 export default {
   props: ['title', 'farmLink', 'topIcon', 'currencyIcon', 'currencyIcon2', 'dailyPool', 'finished', 'inputType', 'poolId'],
@@ -102,9 +107,15 @@ export default {
   },
 
   computed: {
-    ...mapState(['rewardsEndIn', 'metamaskAccount', 'isApproved', 'farmContracts', 'stakeTokens']),
+    ...mapState(['rewardsEndIn', 'metamaskAccount', 'isApproved', 'farmContracts', 'stakeTokens', 'earned']),
     showUniswapMsg () { // show uniswap LP token address
       return this.inputType.includes('-')
+    }
+  },
+
+  filters: {
+    amountFormat (val) {
+      return formatter.format(val)
     }
   },
 
