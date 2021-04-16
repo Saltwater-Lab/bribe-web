@@ -48,8 +48,8 @@
 
       <!-- <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions"> --> <!-- if farming pool is approved, display deposit and withdraw buttons -->
       <!-- preview version -->
-      <div v-if="false" class="stake-organiser -btn-flex actions"> 
-        <div>
+      <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions"> 
+        <div class="deposit-wrapper">
           <input :placeholder="`Amount`" class="deposit__input" v-model="depositAmount" type="number">
             <a class="btn primary" @click="doDeposit()">
               Deposit
@@ -59,7 +59,7 @@
 
         </div>
 
-        <div>
+        <div class="withdraw-wrapper">
           <input :placeholder="`Amount`" class="deposit__input" v-model="withdrawAmount" type="number" v-on:input="onWithdrawAmountChange">
           <a class="btn sec" @click="doWithdraw()">
             Withdraw
@@ -414,14 +414,16 @@ export default {
     overflow: hidden;
     cursor: pointer;
     transition: .2s;
+    border: 2px solid black;
 }
 .btn:hover {
   background: linear-gradient(to top right, #9395f7, #cf9ef0);
+  border: 2px solid #cf9ef0;
 }
 
 .btn.sec {
     background: 0 0;
-    border:2px solid black;
+    // border:2px solid black;
     color: black;
 }
 .btn.sec:hover {
@@ -431,5 +433,24 @@ export default {
 
 .uniswap-msg {
   height: 50px;
+}
+
+.deposit-wrapper {
+  margin-right: 8px;
+}
+.withdraw-wrapper {
+  margin-left: 8px;
+}
+
+// to remove default arrows from input type number
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>
