@@ -39,7 +39,7 @@ export default new Vuex.Store({
     // user specific data
     metamaskAccount: null,
     bribeBalance: 0,
-    isApproved: [false, false, false],
+    isApproved: [null, null, null],
     earned: [0, 0, 0],
     availableToDeposit: [0, 0, 0],
     bribeFarmBalance: [0, 0, 0],
@@ -108,7 +108,7 @@ export default new Vuex.Store({
     resetUser(state) {
       state.metamaskAccount = null;
       state.bribeBalance = 0;
-      state.isApproved = false;
+      state.isApproved = [null, null, null];
       state.earned = [0, 0, 0];
       state.availableToDeposit = [0, 0, 0];
       state.bribeFarmBalance = [0, 0, 0];
@@ -201,7 +201,7 @@ export default new Vuex.Store({
             await state.farmContracts[2].methods.earned(state.metamaskAccount).call(),
           ]);
   
-          commit('setIsApproved', Promise.all([
+          commit('setIsApproved', await Promise.all([
             (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_FARM_ADDRESS).call()) > 0,
             (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_BRIBE_FARM_ADDRESS).call()) > 0,
             (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_ETH_BRIBE_FARM_ADDRESS).call()) > 0,
