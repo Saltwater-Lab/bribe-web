@@ -404,19 +404,19 @@ body {
   }
 }
 
-.title:before {
-    content: 'BRIBE FARM';
-    position:absolute;
-    //top: 0;
-    //left: 0;
-    transform-origin:bottom;
-    transform: rotateX(180deg);
-    line-height:0.862em;
-    background: linear-gradient(0deg, #1d1d1f 0, transparent 80%);
-    -webkit-background-clip: text;
-    color: transparent;
-    opacity: 0.2;
-}
+// .title:before {
+//     content: 'BRIBE FARM';
+//     position:absolute;
+//     //top: 0;
+//     //left: 0;
+//     transform-origin:bottom;
+//     transform: rotateX(180deg);
+//     line-height:0.862em;
+//     background: linear-gradient(0deg, #1d1d1f 0, transparent 80%);
+//     -webkit-background-clip: text;
+//     color: transparent;
+//     opacity: 0.2;
+// }
 
 // .title:after {
 //   content: 'BRIBE FARM';
