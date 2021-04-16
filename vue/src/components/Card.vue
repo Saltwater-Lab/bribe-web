@@ -88,7 +88,6 @@
   </div>
 </template>
 <script>
-import moment from 'moment'
 import {mapActions, mapState} from 'vuex'
 
 export default {
@@ -96,17 +95,10 @@ export default {
 
   data() {
     return {
-      timeLeft: 0,
-      finishPeriodInterval: null,
       depositAmount: null,
       withdrawAmount: null,
       withdrawMax: false
     }
-  },
-
-  created() {
-    if (!this.finished)
-      this.startFinishPeriodTimer();
   },
 
   computed: {
@@ -118,24 +110,6 @@ export default {
 
   methods: {
     ...mapActions(['approve', 'deposit', 'withdraw', 'withdrawAll', 'harvest']),
-    startFinishPeriodTimer() {
-      if (this.rewardsEndIn - moment().unix() > 0) {
-        this.finishPeriodInterval = setInterval(() => {
-          let delta = this.rewardsEndIn - moment().unix();
-          const days = Math.floor(delta / 86400);
-          delta -= days * 86400;
-          const hours = Math.floor(delta / 3600) % 24;
-          delta -= hours * 3600;
-          const minutes = Math.floor(delta / 60) % 60;
-          delta -= minutes * 60;
-          const seconds = delta % 60;
-          this.timeLeft = `${days < 10 ? `0${days}` : days}:${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-        }, 1000);
-      } else {
-        clearInterval(this.finishPeriodInterval);
-        this.timeLeft = 0;
-      }
-    },
     getAddLiquidityLink() {
       return "https://app.uniswap.org/"
     },
