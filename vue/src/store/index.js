@@ -9,6 +9,8 @@ Vue.use(Vuex)
 
 const BN = require('bn.js');
 
+const VUE_APP_PREVIEW = JSON.parse(process.env.VUE_APP_PREVIEW) // only supports true/false
+
 export default new Vuex.Store({
   state: {
     metamaskConnector: null,
@@ -155,7 +157,7 @@ export default new Vuex.Store({
     },
 
     async connectAccount({state, commit, dispatch}) {
-      if (!isCorrectNetwork) { return }
+      if (!isCorrectNetwork()) { return }
       const accounts = await state.metamaskConnector.getAccounts();
       if (accounts) {
         if (accounts.status == 'CONNECTED') {
@@ -178,7 +180,7 @@ export default new Vuex.Store({
     },
 
     async getUserData({commit, state}) {
-      if (process.env.VUE_APP_PREVIEW) { return; }
+      if (VUE_APP_PREVIEW) { return; }
       try{
         if (state.metamaskAccount) {
           if (!state.bribeToken) {
@@ -219,7 +221,8 @@ export default new Vuex.Store({
         }
 
       } catch (err) {
-        if (isCorrectNetwork()) {
+        console.log(err)
+        if (!isCorrectNetwork()) {
           console.error(`index:getUserData: ${err.message}`);
           Vue.prototype.$toasted.error(`Bribe Farm: ${err.message}`, { duration: 5000 });
         }
@@ -227,8 +230,8 @@ export default new Vuex.Store({
     },
 
     async getFarmInfo({ commit, state }) {
-      if (process.env.VUE_APP_PREVIEW) { return; }
-      if (state.farmContracts) {
+      if (VUE_APP_PREVIEW) { return; }
+      if (state.farmContracts.length) {
         try {
           // farmInfo: an array of
           // {
@@ -236,7 +239,6 @@ export default new Vuex.Store({
             //   rewardPerToken: 0,
             //   rewardPerDuration: 0
             // }
-          
           let result = await Promise.all([
             state.farmContracts[0].methods.totalSupply().call(),
             state.farmContracts[1].methods.totalSupply().call(),
@@ -244,8 +246,8 @@ export default new Vuex.Store({
             state.farmContracts[0].methods.rewardPerToken().call(),
             state.farmContracts[1].methods.rewardPerToken().call(),
             state.farmContracts[2].methods.rewardPerToken().call(),
-            state.farmContracts[0].methods.rewardPerDuration().call(),
-            state.farmContracts[1].methods.rewardPerDuration().call(),
+            state.farmContracts[0].methods.rewardPerDuration().call(), // NOTE: no method with this name in Smart Contract
+            state.farmContracts[1].methods.rewardPerDuration().call(), // rewardPerDuration
             state.farmContracts[2].methods.rewardPerDuration().call()
           ])
           
@@ -285,7 +287,7 @@ export default new Vuex.Store({
     },
 
     async harvest({ state, dispatch }, poolId) {
-      if (process.env.VUE_APP_PREVIEW) {
+      if (VUE_APP_PREVIEW) {
         Vue.prototype.$toasted.success(`Bribe farms are not open yet`, { duration: 5000 });
         return
       }
@@ -309,7 +311,7 @@ export default new Vuex.Store({
     },
 
     async approve({ state, dispatch }, poolId) {
-      if (process.env.VUE_APP_PREVIEW) {
+      if (VUE_APP_PREVIEW) {
         Vue.prototype.$toasted.success(`Bribe farms are not open yet`, { duration: 5000 });
         return
       }
@@ -320,7 +322,7 @@ export default new Vuex.Store({
       }
       if (state.stakeTokens[poolId]) {
         try {
-          var spender = state.farmContracts[poolId].address;
+          var spender = state.farmContracts[poolId]._address;
           var allowance = process.env.VUE_APP_UINT_MAX;
           console.log(`approve poolId ${poolId} spender ${spender} allowance ${allowance}`)
           await state.stakeTokens[poolId].methods
