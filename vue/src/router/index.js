@@ -67,7 +67,7 @@ const routes = [
         name: 'bsc',
         component: BSC,
         meta: {
-          title: 'RoobeeFinance',
+          title: 'BRIBE on BSC',
           metaTags: [
             {
               name: 'description',
