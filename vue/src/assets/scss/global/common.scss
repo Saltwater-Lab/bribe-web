@@ -759,6 +759,11 @@ body {
       color: #C2C2C2;
     }
   }
+  &__input::-webkit-outer-spin-button,
+  &__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin:0;
+  }
   &__row{
     display: flex;
     align-items: center;

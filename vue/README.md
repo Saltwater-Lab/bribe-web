@@ -1,5 +1,8 @@
 # Bribe-Frontend
 
+## Preview Version
+set .env PREVIEW_VERSION=true for a preview version that only allows checking airdrop. all other functions are disabled
+
 ## Smart Contact Configs
 Ropsten Testnet
 

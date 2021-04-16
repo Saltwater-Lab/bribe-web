@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Farming from '../pages/farming'
 import About from '../pages/about'
 import BSC from '../pages/BSC'
+import Airdrop from '../pages/airdrop'
 
 Vue.use(VueRouter)
 
@@ -34,11 +35,29 @@ const routes = [
           metaTags: [
             {
               name: 'description',
-              content: 'Stake your FEI and Earn Bribe'
+              content: 'Bribe is a cross-chain liquidity farming protocal for algorithmic stablecoins'
             },
             {
               property: 'og:description',
-              content: 'Stake your FEI and Earn Bribe'
+              content: 'Bribe is a cross-chain liquidity farming protocal for algorithmic stablecoins'
+            }
+          ]
+        }
+    },
+    {
+        path: '/airdrop',
+        name: 'airdrop',
+        component: Airdrop,
+        meta: {
+          title: 'Bribe Genesis Airdrop',
+          metaTags: [
+            {
+              name: 'description',
+              content: 'Claim Bribe Airdrop'
+            },
+            {
+              property: 'og:description',
+              content: 'Claim Bribe Airdrop'
             }
           ]
         }

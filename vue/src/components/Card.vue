@@ -35,40 +35,56 @@
         <small>Your Stake: <i class="fas fa-dollar-sign"></i><span id="stakedSingle">0.000000</span></small>
       </div> -->
 
-      <input :placeholder="`Deposit ${inputType}`" class="deposit__input" v-model="amount" type="number">
-
       <div class="stake-organiser -fx-tab">
         <small class="left">BRIBE Rewards: <i class="fas fa-dollar-sign"></i><span
             id="pairRewardsValue">0.000000</span></small>
-        <small @click="performClaim(this)" class="claim-reward-balance"><i
+        <small @click="doClaim()" class="claim-reward-balance"><i
             class="fas fa-star"></i>&nbsp;Claim</small>
       </div>
 
-      <div @click="doStake('uniswap')" class="stake-organiser -small-buy-trig-uniswap uniswap-msg">
-        <span v-if="showUniswapMsg">Provide liquidity to {{ inputType }} pair on Uniswap</span>
-        <!-- <span v-else><br /><br /></span> -->
-      </div>
-      <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions">
-        <a class="btn primary" @click="doStake('deposit')">
-          Deposit
-        </a>
-        <a class="btn sec" @click="doStake('withdraw')">
-          Withdraw
-        </a>
+      
+
+      <!-- TODO: organize the input boxes and buttons.  -->
+
+      <!-- <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions"> --> <!-- if farming pool is approved, display deposit and withdraw buttons -->
+      <!-- preview version -->
+      <div v-if="false" class="stake-organiser -btn-flex actions"> 
+        <div>
+          <input :placeholder="`Amount`" class="deposit__input" v-model="depositAmount" type="number">
+            <a class="btn primary" @click="doDeposit()">
+              Deposit
+            </a>
+            <small @click="setMaxDeposit()" class="max-btn"><i
+            class="fas fa-star"></i>&nbsp;MAX</small>
+
+        </div>
+
+        <div>
+          <input :placeholder="`Amount`" class="deposit__input" v-model="withdrawAmount" type="number" v-on:input="onWithdrawAmountChange">
+          <a class="btn sec" @click="doWithdraw()">
+            Withdraw
+          </a>
+          <small @click="setMaxWithdraw()" class="max-btn"><i
+            class="fas fa-star"></i>&nbsp;MAX</small>
+        </div>
+
       </div>
       <div v-else class="stake-organiser -btn-flex actions">
-        <a class="btn primary" @click="approve(poolId)">
+        <a class="btn primary" @click="doApprove()">
           Approve
         </a>
       </div>
-    </div>
-    <!-- <div class="card__footer">
-      <div class="double">
-        <span class="title">Daily BRIBE pool</span>
-        <span class="value">{{ dailyPool }} BRIBE</span>
+
+      <!--
+      <div class="stake-organiser -small-buy-trig-uniswap uniswap-msg">
+        TODO: change href link color
+        <span v-if="showUniswapMsg"><a :href="`${getAddLiquidityLink()}`">Provide liquidity to {{ inputType }} pair on Uniswap</a></span>
+        <span v-else><a href="https://app.uniswap.org/#/swap?outputCurrency=0x956f47f50a910163d8bf957cf5846d573e7f87ca">Get FEI from Uniswap</a></span>
+        make it a href to app.uniswap.org/add/..... 
+      
       </div>
-      <router-link :to="farmLink" class="start" :class="{finished}">{{ finished ? 'FINISHED' : 'START FARMING' }}</router-link>
-    </div> -->
+      -->
+    </div>
   </div>
 </template>
 <script>
@@ -82,7 +98,9 @@ export default {
     return {
       timeLeft: 0,
       finishPeriodInterval: null,
-      amount: null
+      depositAmount: null,
+      withdrawAmount: null,
+      withdrawMax: false
     }
   },
 
@@ -92,14 +110,14 @@ export default {
   },
 
   computed: {
-    ...mapState(['rewardsEndIn', 'metamaskAccount', 'isApproved']),
+    ...mapState(['rewardsEndIn', 'metamaskAccount', 'isApproved', 'farmContracts', 'stakeTokens']),
     showUniswapMsg () { // show uniswap LP token address
       return this.inputType.includes('-')
     }
   },
 
   methods: {
-    ...mapActions(['approve']),
+    ...mapActions(['approve', 'deposit', 'withdraw', 'withdrawAll', 'harvest']),
     startFinishPeriodTimer() {
       if (this.rewardsEndIn - moment().unix() > 0) {
         this.finishPeriodInterval = setInterval(() => {
@@ -118,8 +136,49 @@ export default {
         this.timeLeft = 0;
       }
     },
-    performClaim () {},
-    doStake () {}
+    getAddLiquidityLink() {
+      return "https://app.uniswap.org/"
+    },
+    doClaim() {
+      this.harvest(this.poolId)
+    },
+    doDeposit () {
+      if (!this.depositAmount || this.depositAmount <= 0) {
+        // TODO: display error msg
+        return
+      }
+
+      this.deposit([this.poolId, this.depositAmount])
+    },
+    doWithdraw() {
+      // if user have clicked "max"
+      // use contract.exit function to withdraw all
+      // otherwise withdraw the exact wmount
+      if (!this.withdrawAmount || this.withdrawAmount <= 0) {
+        // TODO: display an error msg
+        return
+      }
+
+      if (this.withdrawMax) {
+        this.withdrawAll(this.poolId)
+      }
+      else {
+        this.withdraw([this.poolId, this.withdrawAmount])
+      }
+    },
+    doApprove() {
+      this.approve(this.poolId);
+    },
+    setMaxDeposit() {
+
+    },
+    setMaxWithdraw() {
+      this.withdrawAmount = 100;
+      this.withdrawMax = true;
+    },
+    onWithdrawAmountChange() {
+      this.withdrawMax = false;
+    }
   }
 }
 </script>
@@ -314,10 +373,25 @@ export default {
 .claim-reward-balance:hover {
     background: #acadf8;
 }
+
+
+.max-btn {
+    transition: .2s ease;
+    opacity: .7;
+    box-shadow: 0 0 0 1px;
+    border-radius: 3px;
+    padding: .1rem .2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+.max-btn:hover {
+    background: #acadf8;
+}
+
 .-btn-flex {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-around;
 }
 .stake-ui-container>:last-child {

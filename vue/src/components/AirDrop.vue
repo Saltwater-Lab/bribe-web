@@ -30,11 +30,11 @@
 
       <div class="stake-organiser -btn-flex">
       
-        <a v-if="metamaskAccount" class="btn primary" @click="doStake('redeem')">
-          Claim
+        <a v-if="metamaskAccount" class="btn primary" @click="doClaim()">
+          Not Claimable
         </a>
-        <a v-else class="btn primary">
-          Locked
+        <a v-else class="btn primary" @click="connectAccount">
+          Unlock
         </a>
       </div>
     </div>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import {mapState, mapActions} from 'vuex'
 import api from '@/api'
 import web3 from 'web3'
 
@@ -72,6 +72,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['connectAccount']),
     async getAirDropData (address) {
       if(!address) return;
       const checksum = await web3.utils.toChecksumAddress(address);
@@ -84,8 +85,8 @@ export default {
       }
       console.log(response)
     },
-    doStake () {
-      
+    doClaim() {
+
     }
   }
 }

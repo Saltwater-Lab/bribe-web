@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { createERC20Contract, createBribeTokenContract, createFarmContracts } from '@/utils/contract';
+import { createERC20Contract, createBribeTokenContract, createFarmContracts } from '../utils/contract';
 import WalletModule from './WalletModule';
 import MetamaskConnector from '@/utils/MetamaskConnector.js'
 
@@ -14,7 +14,7 @@ export default new Vuex.Store({
     metamaskConnector: null,
     bribeToken: null,
     graph: null,
-    farms: [], // 3 pools
+    farmContracts: [], // 3 pools
     stakeTokens: [], // 3 tokens 
     farmInfo: [
       {
@@ -55,8 +55,8 @@ export default new Vuex.Store({
       state.stakeTokens = payload
     },
 
-    setFarms(state, payload) {
-      state.farms = payload
+    setFarmContracts(state, payload) {
+      state.farmContracts = payload
     },
 
     setBribeToken(state, payload) {
@@ -91,6 +91,10 @@ export default new Vuex.Store({
       state.rewardsDuration = payload
     },
 
+    setEarned(state, payload) {
+      state.earned = payload
+    },
+
     setGraph(state, payload) {
       state.graph = payload;
     },
@@ -112,18 +116,14 @@ export default new Vuex.Store({
 
   actions: {
     async connectMetamask({state, commit, dispatch}) {
-        console.log('env:', process.env);
-      console.log(process.env.VUE_APP_NETWORK_NAME);
-      console.log(process.env.VUE_APP_PROVIDER_HTTPS);
-      console.log(process.env.VUE_APP_NETWORK_NUMBER);
-      console.log(process.env.VUE_APP_UINT_MAX);
+      //console.log('env:', process.env);
 
       dispatch('getFarmInfo');
 
       if (!state.metamaskConnector) {
         commit('setMetamaskConnector', new MetamaskConnector())
         // creating contracts
-        commit('setFarms', createFarmContracts());
+        commit('setFarmContracts', createFarmContracts());
         commit('setBribeToken', createBribeTokenContract());
         commit('setStakeTokens', [
           createERC20Contract(process.env.VUE_APP_FEI_ADDRESS),
@@ -155,6 +155,7 @@ export default new Vuex.Store({
     },
 
     async connectAccount({state, commit, dispatch}) {
+      if (!isCorrectNetwork) { return }
       const accounts = await state.metamaskConnector.getAccounts();
       if (accounts) {
         if (accounts.status == 'CONNECTED') {
@@ -177,46 +178,57 @@ export default new Vuex.Store({
     },
 
     async getUserData({commit, state}) {
-      if (state.metamaskAccount) {
-        if (!state.bribeToken) {
-          Vue.prototype.$toasted.error(`Bribe Token: the contract is not connected`, { duration: 5000 });
-          return 
+      if (process.env.VUE_APP_PREVIEW) { return; }
+      try{
+        if (state.metamaskAccount) {
+          if (!state.bribeToken) {
+            Vue.prototype.$toasted.error(`Bribe Token: the contract is not connected`, { duration: 5000 });
+            return 
+          }
+          console.log("farms", state.farmContracts)
+          if (!state.farmContracts[0]) {
+            Vue.prototype.$toasted.error(`Bribe Farm: the contract is not connected`, { duration: 5000 });
+            return
+          }
+  
+          commit('setBribeBalance', await state.bribeToken.methods.balanceOf(state.metamaskAccount).call());
+          
+          commit('setEarned', [
+            await state.farmContracts[0].methods.earned(state.metamaskAccount).call(),
+            await state.farmContracts[1].methods.earned(state.metamaskAccount).call(),
+            await state.farmContracts[2].methods.earned(state.metamaskAccount).call(),
+          ]);
+  
+          commit('setIsApproved', Promise.all([
+            (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_FARM_ADDRESS).call()) > 0,
+            (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_BRIBE_FARM_ADDRESS).call()) > 0,
+            (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_ETH_BRIBE_FARM_ADDRESS).call()) > 0,
+          ]));
+  
+          commit('setAvailableToDeposit', Promise.all([
+            await state.stakeTokens[0].methods.balanceOf(state.metamaskAccount).call(),
+            await state.stakeTokens[1].methods.balanceOf(state.metamaskAccount).call(),
+            await state.stakeTokens[2].methods.balanceOf(state.metamaskAccount).call(),
+          ]));
+          
+          commit('setBribeFarmBalance', Promise.all([
+            await state.farmContracts[0].methods.balanceOf(state.metamaskAccount).call(),
+            await state.farmContracts[1].methods.balanceOf(state.metamaskAccount).call(),
+            await state.farmContracts[2].methods.balanceOf(state.metamaskAccount).call(),
+          ]));
         }
-        if (!state.farms[0]) {
-          Vue.prototype.$toasted.error(`Bribe Farm: the contract is not connected`, { duration: 5000 });
-          return
+
+      } catch (err) {
+        if (isCorrectNetwork()) {
+          console.error(`index:getUserData: ${err.message}`);
+          Vue.prototype.$toasted.error(`Bribe Farm: ${err.message}`, { duration: 5000 });
         }
-
-        commit('setBribeBalance', await state.bribeToken.methods.balanceOf(state.metamaskAccount).call());
-
-        commit('setEarned', Promise.all([
-          await state.farms[0].methods.earned(state.metamaskAccount).call(),
-          await state.farms[1].methods.earned(state.metamaskAccount).call(),
-          await state.farms[2].methods.earned(state.metamaskAccount).call(),
-        ]));
-
-        commit('setIsApproved', Promise.all([
-          (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_FARM_ADDRESS).call()) > 0,
-          (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_BRIBE_FARM_ADDRESS).call()) > 0,
-          (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_ETH_BRIBE_FARM_ADDRESS).call()) > 0,
-        ]));
-
-        commit('setAvailableToDeposit', Promise.all([
-          await state.stakeTokens[0].methods.balanceOf(state.metamaskAccount).call(),
-          await state.stakeTokens[1].methods.balanceOf(state.metamaskAccount).call(),
-          await state.stakeTokens[2].methods.balanceOf(state.metamaskAccount).call(),
-        ]));
-        
-        commit('setBribeFarmBalance', Promise.all([
-          await state.farms[0].methods.balanceOf(state.metamaskAccount).call(),
-          await state.farms[1].methods.balanceOf(state.metamaskAccount).call(),
-          await state.farms[2].methods.balanceOf(state.metamaskAccount).call(),
-        ]));
       }
     },
 
     async getFarmInfo({ commit, state }) {
-      if (state.farms) {
+      if (process.env.VUE_APP_PREVIEW) { return; }
+      if (state.farmContracts) {
         try {
           // farmInfo: an array of
           // {
@@ -226,15 +238,15 @@ export default new Vuex.Store({
             // }
           
           let result = await Promise.all([
-            state.farms[0].methods.totalSupply().call(),
-            state.farms[1].methods.totalSupply().call(),
-            state.farms[2].methods.totalSupply().call(),
-            state.farms[0].methods.rewardPerToken().call(),
-            state.farms[1].methods.rewardPerToken().call(),
-            state.farms[2].methods.rewardPerToken().call(),
-            state.farms[0].methods.rewardPerDuration().call(),
-            state.farms[1].methods.rewardPerDuration().call(),
-            state.farms[2].methods.rewardPerDuration().call()
+            state.farmContracts[0].methods.totalSupply().call(),
+            state.farmContracts[1].methods.totalSupply().call(),
+            state.farmContracts[2].methods.totalSupply().call(),
+            state.farmContracts[0].methods.rewardPerToken().call(),
+            state.farmContracts[1].methods.rewardPerToken().call(),
+            state.farmContracts[2].methods.rewardPerToken().call(),
+            state.farmContracts[0].methods.rewardPerDuration().call(),
+            state.farmContracts[1].methods.rewardPerDuration().call(),
+            state.farmContracts[2].methods.rewardPerDuration().call()
           ])
           
           commit('setFarmInfo', [
@@ -255,8 +267,8 @@ export default new Vuex.Store({
             }
           ]);
         } catch (err) {
-          if (checkNetwork()) {
-            console.error(`Bribe Farm: ${err.message}`);
+          if (isCorrectNetwork()) {
+            console.error(`index:getFarmInfo: ${err.message}`);
             Vue.prototype.$toasted.error(`Bribe Farm: ${err.message}`, { duration: 5000 });
           }
         }
@@ -272,48 +284,70 @@ export default new Vuex.Store({
       // xhr.send(data);
     },
 
-    async harvest({ state, dispatch }) {
+    async harvest({ state, dispatch }, poolId) {
+      if (process.env.VUE_APP_PREVIEW) {
+        Vue.prototype.$toasted.success(`Bribe farms are not open yet`, { duration: 5000 });
+        return
+      }
       if (!state.metamaskAccount) {
         Vue.prototype.$bus.$emit('open-wallet-modal');
         return
       }
-      if (state.bribeFarm) {
-        Vue.prototype.$toasted.success('Please wait', { duration: 0 });
-        const res = await state.bribeFarm.methods.getReward().send({from: state.metamaskAccount})
+      if (state.farmContracts[poolId]) {
+        console.log("claim reward", poolId);
+        Vue.prototype.$toasted.success('Please wait', { duration: 5000 });
+        const res = await state.farmContracts[poolId].methods.getReward().send({from: state.metamaskAccount})
         Vue.prototype.$toasted.clear();
         if (res.status) {
           Vue.prototype.$toasted.success('Transaction confirmed!', { duration: 5000 });
           dispatch('getUserData');
         }
       } else {
+        Vue.prototype.$toasted.clear();
         Vue.prototype.$toasted.error(`Bribe Farm: the contract is not connected`, { duration: 5000 });
       }
     },
 
-    async approve({ state, dispatch }) {
+    async approve({ state, dispatch }, poolId) {
+      if (process.env.VUE_APP_PREVIEW) {
+        Vue.prototype.$toasted.success(`Bribe farms are not open yet`, { duration: 5000 });
+        return
+      }
+
       if (!state.metamaskAccount) {
         Vue.prototype.$bus.$emit('open-wallet-modal');
         return
       }
-      if (state.kovanStaking) {
+      if (state.stakeTokens[poolId]) {
         try {
-          await state.kovanStaking.methods
-            .approve(process.env.VUE_APP_FARM_ADDRESS, process.env.VUE_APP_UINT_MAX)
+          var spender = state.farmContracts[poolId].address;
+          var allowance = process.env.VUE_APP_UINT_MAX;
+          console.log(`approve poolId ${poolId} spender ${spender} allowance ${allowance}`)
+          await state.stakeTokens[poolId].methods
+            .approve(spender, allowance)
             .send({from:state.metamaskAccount});
           dispatch('getUserData');
         } catch (err) {
+          console.error(`index:approve: ${err.message}`);
           Vue.prototype.$toasted.error(err.message, { duration: 5000 });
         }
       } else {
+        Vue.prototype.$toasted.clear();
         Vue.prototype.$toasted.error(`The contract is not connected`, { duration: 5000 });
       }
     },
 
-    async deposit({ state, dispatch }, amount) {
-      if (state.bribeFarm) {
+    async deposit({ state, dispatch }, args) {
+      if (!state.metamaskAccount) {
+        Vue.prototype.$bus.$emit('open-wallet-modal');
+        return
+      }
+      var [poolId, amount] = args;
+      if (state.farmContracts && state.farmContracts[poolId]) {
         try {
-          Vue.prototype.$toasted.success('Please wait', { duration: 0 });
-          const res = await state.bribeFarm.methods.stake((new BN((amount * 1e18).toLocaleString('fullwide', {useGrouping:false}), 10))).send({from:state.metamaskAccount})
+          console.log(`deposit poolId ${poolId} amount ${amount}`)
+          Vue.prototype.$toasted.success('Please wait', { duration: 5000 });
+          const res = await state.farmContracts[poolId].methods.stake((new BN((amount * 1e18).toLocaleString('fullwide', {useGrouping:false}), 10))).send({from:state.metamaskAccount})
           Vue.prototype.$toasted.clear();
           if (res.status) {
             Vue.prototype.$toasted.success('Transaction confirmed!', { duration: 5000 });
@@ -321,22 +355,30 @@ export default new Vuex.Store({
           }
         } catch (err) {
           if (err.code == 'INVALID_ARGUMENT')
-            Vue.prototype.$toasted.error(`Placeholder cannot be empty`, { duration: 5000 });
+            Vue.prototype.$toasted.error(`Invalid Amount`, { duration: 5000 });
           else {
             console.error(`Deposit: ${err}`);
+            console.error(`index:deposit: ${err.message}`);
             Vue.prototype.$toasted.error(err.message, { duration: 5000 });
           }
         }
       } else {
+        Vue.prototype.$toasted.clear();
         Vue.prototype.$toasted.error(`Bribe Farm: the contract is not connected`, { duration: 5000 });
       }
     },
 
-    async withdraw({ state, dispatch }, amount) {
-      if (state.bribeFarm) {
+    async withdraw({ state, dispatch }, args) {
+      if (!state.metamaskAccount) {
+        Vue.prototype.$bus.$emit('open-wallet-modal');
+        return
+      }
+      var [poolId, amount] = args;
+      if (state.farmContracts && state.farmContracts[poolId]) {
         try {
-          Vue.prototype.$toasted.success('Please wait', { duration: 0 });
-          const res = await state.bribeFarm.methods.withdraw((new BN((amount * 1e18).toLocaleString('fullwide', {useGrouping:false}), 10))).send({from:state.metamaskAccount});
+          console.log(`withdraw poolId ${poolId} amount ${amount}`)
+          Vue.prototype.$toasted.success('Please wait', { duration: 5000 });
+          const res = await state.farmContracts[poolId].methods.withdraw((new BN((amount * 1e18).toLocaleString('fullwide', {useGrouping:false}), 10))).send({from:state.metamaskAccount});
           Vue.prototype.$toasted.clear();
           if (res.status) {
             Vue.prototype.$toasted.success('Transaction confirmed!', { duration: 5000 });
@@ -344,13 +386,43 @@ export default new Vuex.Store({
           }
         } catch (err) {
           if (err.code == 'INVALID_ARGUMENT')
-            Vue.prototype.$toasted.error(`Placeholder cannot be empty`, { duration: 5000 });
+            Vue.prototype.$toasted.error(`Invalid Amount`, { duration: 5000 });
           else {
-            console.error(`Withdraw: ${err.message}`);
+            console.error(`index:withdraw: ${err.message}`);
             Vue.prototype.$toasted.error(err.message, { duration: 5000 });
           }
         }
       } else {
+        Vue.prototype.$toasted.clear();
+        Vue.prototype.$toasted.error(`Bribe Farm: the contract is not connected`, { duration: 5000 });
+      }
+    },
+    
+    async withdrawAll({ state, dispatch }, poolId) {
+      if (!state.metamaskAccount) {
+        Vue.prototype.$bus.$emit('open-wallet-modal');
+        return
+      }
+      if (state.farmContracts && state.farmContracts[poolId]) {
+        try {
+          console.log(`withdrawAll poolId ${poolId}`)
+          Vue.prototype.$toasted.success('Please wait', { duration: 5000 });
+          const res = await state.farmContracts[poolId].methods.exit().send({from:state.metamaskAccount});
+          Vue.prototype.$toasted.clear();
+          if (res.status) {
+            Vue.prototype.$toasted.success('Transaction confirmed!', { duration: 5000 });
+            dispatch('getUserData');
+          }
+        } catch (err) {
+          if (err.code == 'INVALID_ARGUMENT')
+            Vue.prototype.$toasted.error(`Invalid Amount`, { duration: 5000 });
+          else {
+            console.error(`index:withdrawAll: ${err.message}`);
+            Vue.prototype.$toasted.error(err.message, { duration: 5000 });
+          }
+        }
+      } else {
+        Vue.prototype.$toasted.clear();
         Vue.prototype.$toasted.error(`Bribe Farm: the contract is not connected`, { duration: 5000 });
       }
     },
@@ -377,9 +449,10 @@ export default new Vuex.Store({
   }
 })
 
-const checkNetwork = () => {
-  networkError();
+const isCorrectNetwork = () => {
+  console.log("window network version", window.ethereum.networkVersion)
   if (window.ethereum.networkVersion == (process.env.NODE_ENV === 'production' ? 1 : 3)) return true // ropsten = 3, mainnet = 1
+  networkError();
   return false
 }
 
@@ -399,8 +472,5 @@ const debounce = (func, wait) => {
 
 const networkError = debounce(() => {
   const desiredNetwork = process.env.NODE_ENV === 'production' ? 'MAINNET' : 'ROPSTEN';
-  console.error(`Wrong network, connect to ${desiredNetwork}`);
-
-  // TODO: Uncomment this
-  // Vue.prototype.$toasted.error(`Wrong network, connect to ${desiredNetwork}`, { duration: 0 });
+  Vue.prototype.$toasted.error(`Wrong network, please connect to ${desiredNetwork}`, { duration: 5000});
 }, 2000);

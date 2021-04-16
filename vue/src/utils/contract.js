@@ -4,7 +4,7 @@ import bribeTokenABI from '../abi/BribeToken';
 
 const createBribeTokenContract = () => {
 	const web3 = new Web3(window.ethereum || new Web3.providers.HttpProvider(process.env.VUE_APP_PROVIDER_HTTPS));
-	const token = new web3.eth.Contract(bribeTokenABI, process.env.VUE_APP_BRIBE_TOKEN_ADDRESS);
+	const token = new web3.eth.Contract(bribeTokenABI, process.env.VUE_APP_BRIBE_ADDRESS);
 	return token;
 }
 

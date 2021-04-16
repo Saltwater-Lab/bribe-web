@@ -18,8 +18,7 @@
           <h2 class="title">Daily BRIBE Pool Rewards</h2>
           <span class="value">{{ numberWithSpaces(toFixedTwo(rewardPerBlock * 5760 * 15 / 1e18)) }}</span>
         </div> -->
-        BRIBE is a cross-chain liquidity mining and <br />
-        vote delegation protocol for algorithmic stablecoins
+        BRIBE is a cross-chain liquidity farm for algorithmic stablecoins
       </div>
       <!-- <h2 class="farm-label">Add LPs BRIBE/ETH from Uniswap pool to farm BRIBE!</h2> -->
       <div class="balance">
@@ -29,7 +28,10 @@
           <Card title="Deposit BRIBE-ETH & Earn BRIBE" pool-id=2 input-type="BRIBE-ETH" farm-link="/farming_burger" top-icon="/pics/bribe.png" currency-icon="/pics/bribe.png" currency-icon2="/pics/eth.png" daily-pool="25 000" />
         </div>
         <div class="balance__info">
-          <AirDrop />
+          <p class="showcase-text">
+            BRIBE token is not launched yet.<br><i class="fas fa-exclamation-triangle"></i>&nbsp;<u>Please beware of
+              scams on Uniswap.</u><br>Official token address will be updated upon token generation
+          </p>
         </div>
       </div>
     </div>
@@ -41,7 +43,6 @@
 import {mapState, mapActions, mapGetters} from 'vuex';
 import DepositModal from "@/components/DepositModal";
 import WithdrawModal from "@/components/WithdrawModal";
-import AirDrop from "@/components/AirDrop";
 import Card from '@/components/Card';
 import toFixedTwo from '@/utils/toFixedTwo';
 
@@ -51,8 +52,7 @@ export default {
   components: {
     DepositModal,
     WithdrawModal,
-    Card,
-    AirDrop
+    Card
   },
 
   data() {
