@@ -111,6 +111,7 @@ export default {
   font-size: 56px;
   letter-spacing: 6px;
 }
+
 .subheading {
   font-size: 20px;
 }
