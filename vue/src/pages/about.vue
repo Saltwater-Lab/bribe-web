@@ -16,9 +16,9 @@
             Reserve for future airdrops: 250,000<br>
             <br>
             1,000,000 BRIBE farming rewards will be distributed during the first month.<br>
-            Daily Fei Pool Rewards: 50,000 BRIBE<br>
-            Daily Fei-Bribe Pool Rewards: 83,333 BRIBE<br>
-            Daily ETH-Bribe Pool Rewards: 200,000 BRIBE<br>
+            Daily Fei Pool Rewards: 5,000 BRIBE<br>
+            Daily Fei-Bribe Pool Rewards: 8,333 BRIBE<br>
+            Daily ETH-Bribe Pool Rewards: 20,000 BRIBE<br>
           </div>
           <div class="title2 title--small">Protocol Fees</div>
           <div class="info__about-text">Fei pool charges 1% withdrawal fee paid in Fei. LP pools do not charge fees. Collected fees will be used to buyback BRIBE in the open market on a weekly basis. The protocol fees can be adjusted or removed by the governance vote of BRIBE holders.</div>
