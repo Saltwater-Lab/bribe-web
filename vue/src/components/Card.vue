@@ -29,7 +29,7 @@
       </div>
 
       <div class="stake-organiser left">
-        <small>Your Stake: <i class="fas fa-dollar-sign"></i><span id="stakedSingle">0.000000</span></small>
+        <small>Your Stake: <i class="fas fa-dollar-sign"></i><span id="stakedSingle">{{ bribeFarmBalance[poolId] / 1e18 | amountFormat }}</span></small>
       </div>
       <!-- <div class="stake-organiser right">
         <small>Your Stake: <i class="fas fa-dollar-sign"></i><span id="stakedSingle">0.000000</span></small>
@@ -37,7 +37,7 @@
 
       <div class="stake-organiser -fx-tab">
         <small class="left">BRIBE Rewards: <i class="fas fa-dollar-sign"></i><span
-            id="pairRewardsValue">{{ earned[poolId] | amountFormat}}</span></small>
+            id="pairRewardsValue">{{ earned[poolId] / 1e18 | amountFormat}}</span></small>
         <small @click="doClaim()" class="claim-reward-balance"><i
             class="fas fa-star"></i>&nbsp;Claim</small>
       </div>
@@ -46,9 +46,9 @@
 
       <!-- TODO: organize the input boxes and buttons.  -->
 
-      <!-- <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions"> --> <!-- if farming pool is approved, display deposit and withdraw buttons -->
-      <!-- preview version -->
-      <div v-if="false" class="stake-organiser -btn-flex actions"> 
+      <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions"> <!-- if farming pool is approved, display deposit and withdraw buttons -->
+      <!-- preview version
+      <div v-if="false" class="stake-organiser -btn-flex actions">  -->
         <div>
           <input :placeholder="`Amount`" class="deposit__input" v-model="depositAmount" type="number">
             <a class="btn primary" @click="doDeposit()">
@@ -107,7 +107,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['rewardsEndIn', 'metamaskAccount', 'isApproved', 'farmContracts', 'stakeTokens', 'earned']),
+    ...mapState(['rewardsEndIn', 'metamaskAccount', 'isApproved', 'farmContracts', 'stakeTokens', 'earned', 'availableToDeposit', 'bribeFarmBalance']),
     showUniswapMsg () { // show uniswap LP token address
       return this.inputType.includes('-')
     }
@@ -155,10 +155,10 @@ export default {
       this.approve(this.poolId);
     },
     setMaxDeposit() {
-
+      this.depositAmount = this.availableToDeposit[this.poolId] / 1e18
     },
     setMaxWithdraw() {
-      this.withdrawAmount = 100;
+      this.withdrawAmount = this.bribeFarmBalance[this.poolId] / 1e18;
       this.withdrawMax = true;
     },
     onWithdrawAmountChange() {

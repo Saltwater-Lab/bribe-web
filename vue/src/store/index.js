@@ -21,18 +21,15 @@ export default new Vuex.Store({
     farmInfo: [
       {
         totalStaked: 0,
-        rewardPerToken: 0,
-        rewardPerDuration: 0
+        rewardPerToken: 0
       },
       {
         totalStaked: 0,
-        rewardPerToken: 0,
-        rewardPerDuration: 0
+        rewardPerToken: 0
       },
       {
         totalStaked: 0,
-        rewardPerToken: 0,
-        rewardPerDuration: 0
+        rewardPerToken: 0
       }
     ],
 
@@ -157,7 +154,7 @@ export default new Vuex.Store({
     },
 
     async connectAccount({state, commit, dispatch}) {
-      if (!isCorrectNetwork()) { return }
+      if (!isCorrectNetwork()) { console.log("wrong network"); return }
       const accounts = await state.metamaskConnector.getAccounts();
       if (accounts) {
         if (accounts.status == 'CONNECTED') {
@@ -180,7 +177,7 @@ export default new Vuex.Store({
     },
 
     async getUserData({commit, state}) {
-      if (VUE_APP_PREVIEW) { return; }
+      if (VUE_APP_PREVIEW) { console.log("preview version"); return; }
       try{
         if (state.metamaskAccount) {
           if (!state.bribeToken) {
@@ -201,24 +198,29 @@ export default new Vuex.Store({
             await state.farmContracts[2].methods.earned(state.metamaskAccount).call(),
           ]);
   
-          commit('setIsApproved', await Promise.all([
-            (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_FARM_ADDRESS).call()) > 0,
-            (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_BRIBE_FARM_ADDRESS).call()) > 0,
-            (await state.bribeToken.methods.allowance(state.metamaskAccount, process.env.VUE_APP_ETH_BRIBE_FARM_ADDRESS).call()) > 0,
-          ]));
+          commit('setIsApproved', [
+            (await state.stakeTokens[0].methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_FARM_ADDRESS).call()) > 0,
+            (await state.stakeTokens[1].methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_BRIBE_FARM_ADDRESS).call()) > 0,
+            (await state.stakeTokens[2].methods.allowance(state.metamaskAccount, process.env.VUE_APP_ETH_BRIBE_FARM_ADDRESS).call()) > 0,
+          ]);
   
-          commit('setAvailableToDeposit', Promise.all([
+          commit('setAvailableToDeposit', [
             await state.stakeTokens[0].methods.balanceOf(state.metamaskAccount).call(),
             await state.stakeTokens[1].methods.balanceOf(state.metamaskAccount).call(),
             await state.stakeTokens[2].methods.balanceOf(state.metamaskAccount).call(),
-          ]));
+          ]);
           
-          commit('setBribeFarmBalance', Promise.all([
+          commit('setBribeFarmBalance', [
             await state.farmContracts[0].methods.balanceOf(state.metamaskAccount).call(),
             await state.farmContracts[1].methods.balanceOf(state.metamaskAccount).call(),
             await state.farmContracts[2].methods.balanceOf(state.metamaskAccount).call(),
-          ]));
+          ]);
         }
+        console.log("user bribe balance", state.bribeBalance)
+        console.log("isApproved", state.isApproved)
+        console.log("earned", state.earned)
+        console.log("avaiable to deposit", state.availableToDeposit)
+        console.log("farm staked balance", state.bribeFarmBalance)
 
       } catch (err) {
         console.log(err)
@@ -236,8 +238,7 @@ export default new Vuex.Store({
           // farmInfo: an array of
           // {
             //   totalStaked: 0,
-            //   rewardPerToken: 0,
-            //   rewardPerDuration: 0
+            //   rewardPerToken: 0
             // }
           let result = await Promise.all([
             state.farmContracts[0].methods.totalSupply().call(),
@@ -245,27 +246,21 @@ export default new Vuex.Store({
             state.farmContracts[2].methods.totalSupply().call(),
             state.farmContracts[0].methods.rewardPerToken().call(),
             state.farmContracts[1].methods.rewardPerToken().call(),
-            state.farmContracts[2].methods.rewardPerToken().call(),
-            state.farmContracts[0].methods.rewardPerDuration().call(), // NOTE: no method with this name in Smart Contract
-            state.farmContracts[1].methods.rewardPerDuration().call(), // rewardPerDuration
-            state.farmContracts[2].methods.rewardPerDuration().call()
+            state.farmContracts[2].methods.rewardPerToken().call()
           ])
           
           commit('setFarmInfo', [
             {
               totalStaked: result[0],
-              rewardPerToken: result[3],
-              rewardPerDuration: result[6]
+              rewardPerToken: result[3]
             },
             {
               totalStaked: result[1],
-              rewardPerToken: result[4],
-              rewardPerDuration: result[7]
+              rewardPerToken: result[4]
             },
             {
               totalStaked: result[2],
-              rewardPerToken: result[5],
-              rewardPerDuration: result[8]
+              rewardPerToken: result[5]
             }
           ]);
         } catch (err) {
@@ -297,7 +292,7 @@ export default new Vuex.Store({
       }
       if (state.farmContracts[poolId]) {
         console.log("claim reward", poolId);
-        Vue.prototype.$toasted.success('Please wait', { duration: 5000 });
+        Vue.prototype.$toasted.success('Please wait for the transaction', { duration: 0 });
         const res = await state.farmContracts[poolId].methods.getReward().send({from: state.metamaskAccount})
         Vue.prototype.$toasted.clear();
         if (res.status) {
@@ -348,7 +343,7 @@ export default new Vuex.Store({
       if (state.farmContracts && state.farmContracts[poolId]) {
         try {
           console.log(`deposit poolId ${poolId} amount ${amount}`)
-          Vue.prototype.$toasted.success('Please wait', { duration: 5000 });
+          Vue.prototype.$toasted.success('Please wait for the transaction', { duration: 0 });
           const res = await state.farmContracts[poolId].methods.stake((new BN((amount * 1e18).toLocaleString('fullwide', {useGrouping:false}), 10))).send({from:state.metamaskAccount})
           Vue.prototype.$toasted.clear();
           if (res.status) {
@@ -379,7 +374,7 @@ export default new Vuex.Store({
       if (state.farmContracts && state.farmContracts[poolId]) {
         try {
           console.log(`withdraw poolId ${poolId} amount ${amount}`)
-          Vue.prototype.$toasted.success('Please wait', { duration: 5000 });
+          Vue.prototype.$toasted.success('Please wait for the transaction', { duration: 0 });
           const res = await state.farmContracts[poolId].methods.withdraw((new BN((amount * 1e18).toLocaleString('fullwide', {useGrouping:false}), 10))).send({from:state.metamaskAccount});
           Vue.prototype.$toasted.clear();
           if (res.status) {
@@ -408,7 +403,7 @@ export default new Vuex.Store({
       if (state.farmContracts && state.farmContracts[poolId]) {
         try {
           console.log(`withdrawAll poolId ${poolId}`)
-          Vue.prototype.$toasted.success('Please wait', { duration: 5000 });
+          Vue.prototype.$toasted.success('Please wait for the transaction', { duration: 0 });
           const res = await state.farmContracts[poolId].methods.exit().send({from:state.metamaskAccount});
           Vue.prototype.$toasted.clear();
           if (res.status) {
@@ -452,6 +447,9 @@ export default new Vuex.Store({
 })
 
 const isCorrectNetwork = () => {
+  if (window.ethereum.networkVersion === null) {
+    window.ethereum.enable()
+  }
   console.log("window network version", window.ethereum.networkVersion)
   if (window.ethereum.networkVersion == (process.env.NODE_ENV === 'production' ? 1 : 3)) return true // ropsten = 3, mainnet = 1
   networkError();
