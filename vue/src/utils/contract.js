@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import farmingPoolABI from '../abi/FarmingPool';
 import bribeTokenABI from '../abi/BribeToken';
+import UniswapV2PairABI from '../abi/UniswapV2Pair';
 
 const createBribeTokenContract = () => {
 	const web3 = new Web3(window.ethereum || new Web3.providers.HttpProvider(process.env.VUE_APP_PROVIDER_HTTPS));
@@ -14,6 +15,12 @@ const createERC20Contract = (address) => {
 	return token;
 }
 
+const createUniswapPairContract = (address) => {
+	const web3 = new Web3(window.ethereum || new Web3.providers.HttpProvider(process.env.VUE_APP_PROVIDER_HTTPS));
+	const pair = new web3.eth.Contract(UniswapV2PairABI, address);
+	return pair;
+}
+
 const createFarmContracts = () => {
 	const web3 = new Web3(window.ethereum || new Web3.providers.HttpProvider(process.env.VUE_APP_PROVIDER_HTTPS));
 	const fei = new web3.eth.Contract(farmingPoolABI, process.env.VUE_APP_FEI_FARM_ADDRESS);
@@ -22,4 +29,4 @@ const createFarmContracts = () => {
 	return [fei, feiBribeLP, ethBribeLP];
 }
 
-export { createBribeTokenContract, createFarmContracts, createERC20Contract };
+export { createBribeTokenContract, createFarmContracts, createERC20Contract, createUniswapPairContract };

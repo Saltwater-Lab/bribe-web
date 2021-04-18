@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { createERC20Contract, createBribeTokenContract, createFarmContracts } from '../utils/contract';
+          // eslint-disable-next-line no-unused-vars
+import { createERC20Contract, createBribeTokenContract, createFarmContracts, createUniswapPairContract } from '../utils/contract';
 import WalletModule from './WalletModule';
 import MetamaskConnector from '@/utils/MetamaskConnector.js'
+import api from '@/api'
 
 Vue.use(Vuex)
 
@@ -21,15 +23,18 @@ export default new Vuex.Store({
     farmInfo: [
       {
         totalStaked: 0,
-        rewardPerToken: 0
+        rewardPerToken: 0,
+        withdrawFee: 0
       },
       {
         totalStaked: 0,
-        rewardPerToken: 0
+        rewardPerToken: 0,
+        withdrawFee: 0
       },
       {
         totalStaked: 0,
-        rewardPerToken: 0
+        rewardPerToken: 0,
+        withdrawFee: 0
       }
     ],
 
@@ -40,6 +45,19 @@ export default new Vuex.Store({
     earned: [0, 0, 0],
     availableToDeposit: [0, 0, 0],
     bribeFarmBalance: [0, 0, 0],
+    nextClaimTime: [0, 0, 0],
+
+    // price data
+    coinPrices: [
+      { id: 'fei-protocol', ticker: 'FEI', usd: null },
+      { id: 'ethereum', ticker: 'ETH', usd: null }
+    ],
+
+    // uniswap pair data
+    lpData: [
+      { name: 'FEI-BRIBE', address: process.env.VUE_APP_FEI_BRIBE_LP_ADDRESS },
+      { name: 'ETH-BRIBE', address: process.env.VUE_APP_ETH_BRIBE_LP_ADDRESS }
+    ],
 
 
     firstEnter: true
@@ -73,6 +91,10 @@ export default new Vuex.Store({
     setFirstEnter(state, payload) {
       state.firstEnter = payload
     },
+    
+    setFarmInfo(state, payload) {
+      state.farmInfo = payload
+    },
 
     setIsApproved(state, payload) {
       state.isApproved = payload
@@ -94,12 +116,20 @@ export default new Vuex.Store({
       state.earned = payload
     },
 
-    setGraph(state, payload) {
-      state.graph = payload;
+    setNextClaimTime(state, payload) {
+      state.nextClaimTime = payload
     },
 
     setStakingTotalSupply(state, payload) {
       state.stakingTotalSupply = payload;
+    },
+
+    setCoinPrices(state, payload) {
+      state.coinPrices = payload;
+    },
+
+    setLpData(state, payload) {
+      state.lpData = payload;
     },
 
     resetUser(state) {
@@ -109,6 +139,7 @@ export default new Vuex.Store({
       state.earned = [0, 0, 0];
       state.availableToDeposit = [0, 0, 0];
       state.bribeFarmBalance = [0, 0, 0];
+      state.nextClaimTime = [0, 0, 0];
       localStorage.removeItem('account-unlocked');
     }
   },
@@ -117,7 +148,6 @@ export default new Vuex.Store({
     async connectMetamask({state, commit, dispatch}) {
       //console.log('env:', process.env);
 
-      dispatch('getFarmInfo');
 
       if (!state.metamaskConnector) {
         commit('setMetamaskConnector', new MetamaskConnector())
@@ -129,6 +159,44 @@ export default new Vuex.Store({
           createERC20Contract(process.env.VUE_APP_FEI_BRIBE_LP_ADDRESS),
           createERC20Contract(process.env.VUE_APP_ETH_BRIBE_LP_ADDRESS)
         ])
+
+        
+        // fetch fei and eth prices
+        const res = await api.getCoinsPrice()
+        const newPrices = state.coinPrices.map((el) => {
+          return {
+            ticker: el.ticker,
+            usd: parseFloat(res[el.id].usd)
+          }
+        })
+        commit('setCoinPrices', newPrices)
+
+        var loadContract = async (item) => {
+          const contract = createUniswapPairContract(item.address)
+          const result = await contract.methods.getReserves().call() // result._reserve0 is a string of big number
+          const reserve0 = parseFloat(result._reserve0)
+          const reserve1 = parseFloat(result._reserve1)
+          const token0 = await contract.methods.token0().call()
+          const bribeIndex = token0.toLowerCase() == process.env.VUE_APP_BRIBE_ADDRESS.toLowerCase() ? 0 : 1
+          const bribePrice = bribeIndex == 0 ? reserve1 / reserve0 : reserve0 / reserve1
+          
+          const totalSupply = await contract.methods.totalSupply().call()
+
+        
+          const info = {
+            name: item.name,
+            address: item.address,
+            contract: contract,
+            reserve0: reserve0,
+            reserve1: reserve1,
+            totalSupply: totalSupply,
+            bribePrice: bribePrice,
+            bribeIndex: bribeIndex
+          }
+          return info
+        }
+
+        commit('setLpData', [await loadContract(state.lpData[0]), await loadContract(state.lpData[1])])
 
         if (!state.metamaskConnector || state.metamaskConnector.status == 'NOT_INSTALLED') {
           localStorage.removeItem('account-unlocked')
@@ -150,11 +218,12 @@ export default new Vuex.Store({
         dispatch('connectAccount');
       }
 
+      dispatch('getFarmInfo');
+
       commit('setFirstEnter', false);
     },
 
     async connectAccount({state, commit, dispatch}) {
-      if (!isCorrectNetwork()) { console.log("wrong network"); return }
       const accounts = await state.metamaskConnector.getAccounts();
       if (accounts) {
         if (accounts.status == 'CONNECTED') {
@@ -197,6 +266,12 @@ export default new Vuex.Store({
             await state.farmContracts[1].methods.earned(state.metamaskAccount).call(),
             await state.farmContracts[2].methods.earned(state.metamaskAccount).call(),
           ]);
+
+          commit('setNextClaimTime', [
+            parseInt(await state.farmContracts[0].methods.nextClaimTime(state.metamaskAccount).call()),
+            0,
+            0
+          ])
   
           commit('setIsApproved', [
             (await state.stakeTokens[0].methods.allowance(state.metamaskAccount, process.env.VUE_APP_FEI_FARM_ADDRESS).call()) > 0,
@@ -221,6 +296,7 @@ export default new Vuex.Store({
         console.log("earned", state.earned)
         console.log("avaiable to deposit", state.availableToDeposit)
         console.log("farm staked balance", state.bribeFarmBalance)
+        console.log("next claim time", state.nextClaimTime)
 
       } catch (err) {
         console.log(err)
@@ -233,7 +309,7 @@ export default new Vuex.Store({
 
     async getFarmInfo({ commit, state }) {
       if (VUE_APP_PREVIEW) { return; }
-      if (state.farmContracts.length) {
+      if (state.farmContracts.length > 0) {
         try {
           // farmInfo: an array of
           // {
@@ -246,23 +322,38 @@ export default new Vuex.Store({
             state.farmContracts[2].methods.totalSupply().call(),
             state.farmContracts[0].methods.rewardPerToken().call(),
             state.farmContracts[1].methods.rewardPerToken().call(),
-            state.farmContracts[2].methods.rewardPerToken().call()
+            state.farmContracts[2].methods.rewardPerToken().call(),
+            state.farmContracts[0].methods.getRewardForDuration().call(),
+            state.farmContracts[1].methods.getRewardForDuration().call(),
+            state.farmContracts[2].methods.getRewardForDuration().call()
+
           ])
           
           commit('setFarmInfo', [
             {
               totalStaked: result[0],
-              rewardPerToken: result[3]
+              rewardPerToken: result[3],
+              rewardForDuration: result[6],
+              withdrawFee: 1, // NOTE: manual config to save a few contract calls
+              hasClaimDelay: true
             },
             {
               totalStaked: result[1],
-              rewardPerToken: result[4]
+              rewardPerToken: result[4],
+              rewardForDuration: result[7],
+              withdrawFee: 0,
+              hasClaimDelay: false
             },
             {
               totalStaked: result[2],
-              rewardPerToken: result[5]
+              rewardPerToken: result[5],
+              rewardForDuration: result[8],
+              withdrawFee: 0,
+              hasClaimDelay: false
             }
           ]);
+        
+          console.log('farmInfo',state.farmInfo)
         } catch (err) {
           if (isCorrectNetwork()) {
             console.error(`index:getFarmInfo: ${err.message}`);
@@ -288,6 +379,10 @@ export default new Vuex.Store({
       }
       if (!state.metamaskAccount) {
         Vue.prototype.$bus.$emit('open-wallet-modal');
+        return
+      }
+      if (state.earned[poolId] <= 0) {
+        Vue.prototype.$toasted.error(`No claimable rewards`, { duration: 5000 });
         return
       }
       if (state.farmContracts[poolId]) {
@@ -319,11 +414,16 @@ export default new Vuex.Store({
         try {
           var spender = state.farmContracts[poolId]._address;
           var allowance = process.env.VUE_APP_UINT_MAX;
+          Vue.prototype.$toasted.success('Please wait for the transaction', { duration: 0 });
           console.log(`approve poolId ${poolId} spender ${spender} allowance ${allowance}`)
-          await state.stakeTokens[poolId].methods
+          const res = await state.stakeTokens[poolId].methods
             .approve(spender, allowance)
             .send({from:state.metamaskAccount});
-          dispatch('getUserData');
+          Vue.prototype.$toasted.clear();
+          if (res.status) {
+            Vue.prototype.$toasted.success('Transaction confirmed!', { duration: 5000 });
+            dispatch('getUserData');
+          }
         } catch (err) {
           console.error(`index:approve: ${err.message}`);
           Vue.prototype.$toasted.error(err.message, { duration: 5000 });
@@ -426,19 +526,6 @@ export default new Vuex.Store({
   },
 
   getters: {
-    apy(state) {
-      if (state.graph && state.stakingTotalSupply) {
-        const token0 = state.graph.pairs0[0].token0;
-        const yReward = (state.rewardPerBlock / state.bribeFarmSupply) * 31536000
-        const bribePrice = token0.derivedETH
-        const totalLiquidity = token0.totalLiquidity * 2 * token0.derivedETH
-        const lpPrice = totalLiquidity / (state.stakingTotalSupply/1e18)
-        if (lpPrice)
-          // apy = (yReward * bribePrice) / lpPrice * 100
-          return (yReward * bribePrice) / lpPrice * 100
-      }
-      return 0
-    }
   },
 
   modules: {

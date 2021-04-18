@@ -33,6 +33,10 @@
               scams on Uniswap.</u><br>Official token address will be updated upon token generation
           </p>
         </div>
+
+        <div>
+          <CoinsRow />
+        </div>
       </div>
     </div>
     <DepositModal ref="deposit-modal" />
@@ -44,6 +48,7 @@ import {mapState, mapActions, mapGetters} from 'vuex';
 import DepositModal from "@/components/DepositModal";
 import WithdrawModal from "@/components/WithdrawModal";
 import Card from '@/components/Card';
+import CoinsRow from '@/components/CoinsRow';
 import toFixedTwo from '@/utils/toFixedTwo';
 
 export default {
@@ -52,7 +57,8 @@ export default {
   components: {
     DepositModal,
     WithdrawModal,
-    Card
+    Card,
+    CoinsRow
   },
 
   data() {

@@ -1,13 +1,13 @@
 <template>
   <div class="info info--pt">
     <div class="container">
-      <ul class="wrapper">
+      <!-- <ul class="wrapper">
         <li class="circle"></li>
         <li class="circle"></li>
         <li class="circle"></li>
         <li class="circle"></li>
         <li class="circle"></li>
-      </ul>
+      </ul> -->
         <AirDrop />
     </div>
   </div>

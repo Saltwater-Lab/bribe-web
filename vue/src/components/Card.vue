@@ -9,11 +9,11 @@
       <div class="stake-organiser -stats-flex">
         <div class="stats">
           <span class="stat -pc"><i class="fas fa-dollar-sign"></i><span class="staked-pair-balance-holder"
-              id="stakedStatistic">-,---,--- </span></span>
+              id="stakedStatistic">{{calcStakedValue(farmInfo[poolId].totalStaked / 1e18) | dollarAmountFormat}}</span></span>
           <small>Total Staked</small>
         </div>
         <div class="stats">
-          <span class="stat -pc"><span class="apy-holder" id="singleAPY">---</span><i
+          <span class="stat -pc"><span class="apy-holder" id="singleAPY">{{calcApy() | percentFormat}}</span><i
               class="fas fa-percentage"></i></span>
           <small> APY</small>
         </div>
@@ -38,18 +38,23 @@
       <div class="stake-organiser -fx-tab">
         <small class="left">BRIBE Rewards: <i class="fas fa-dollar-sign"></i><span
             id="pairRewardsValue">{{ earned[poolId] / 1e18 | amountFormat}}</span></small>
-        <small @click="doClaim()" class="claim-reward-balance"><i
-            class="fas fa-star"></i>&nbsp;Claim</small>
+        <div v-if="nextClaimTime[poolId]<Date.now()/1000">
+          <small @click="doClaim()" class="claim-reward-balance"><i
+              class="fas fa-star"></i>&nbsp;Claim</small>
+        </div>
+        <div v-else>
+          <p>Claim rewards in {{claimCountDown | timeFormat}}</p>
+        </div>
       </div>
 
       
 
       <!-- TODO: organize the input boxes and buttons.  -->
 
-      <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions"> <!-- if farming pool is approved, display deposit and withdraw buttons -->
-      <!-- preview version
-      <div v-if="false" class="stake-organiser -btn-flex actions">  -->
-        <div>
+      <!-- <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions"> --> <!-- if farming pool is approved, display deposit and withdraw buttons -->
+      <!-- preview version -->
+      <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions"> 
+        <div class="deposit-wrapper">
           <input :placeholder="`Amount`" class="deposit__input" v-model="depositAmount" type="number">
             <a class="btn primary" @click="doDeposit()">
               Deposit
@@ -59,7 +64,7 @@
 
         </div>
 
-        <div>
+        <div class="withdraw-wrapper">
           <input :placeholder="`Amount`" class="deposit__input" v-model="withdrawAmount" type="number" v-on:input="onWithdrawAmountChange">
           <a class="btn sec" @click="doWithdraw()">
             Withdraw
@@ -100,22 +105,52 @@ export default {
 
   data() {
     return {
+      pairContract: null,
       depositAmount: null,
       withdrawAmount: null,
-      withdrawMax: false
+      withdrawMax: false,
+      claimCountDown: 0
     }
   },
 
   computed: {
-    ...mapState(['rewardsEndIn', 'metamaskAccount', 'isApproved', 'farmContracts', 'stakeTokens', 'earned', 'availableToDeposit', 'bribeFarmBalance']),
+    ...mapState(['lpData', 'coinPrices','farmInfo', 'metamaskAccount', 'nextClaimTime', 'isApproved', 'farmContracts', 'stakeTokens', 'earned', 'availableToDeposit', 'bribeFarmBalance']),
     showUniswapMsg () { // show uniswap LP token address
       return this.inputType.includes('-')
     }
   },
 
+  created: function() {
+    
+  },
+
   filters: {
     amountFormat (val) {
       return formatter.format(val)
+    },
+    // values could be nan if contract not loaded
+    dollarAmountFormat (val) {
+      return isNaN(val) ? '---' : '$'+formatter.format(val)
+    },
+    percentFormat(val) {
+      return isNaN(val) ? '---' : formatter.format(val)+'%'
+    },
+
+    timeFormat(val) {
+      var date = new Date(0)
+      date.setSeconds(val); // specify value for SECONDS here
+      return date.toISOString().substr(11, 8);
+    },
+  },
+
+  watch: {
+    nextClaimTime: {
+      handler(value) {
+        if (value[this.poolId] > Date.now() / 1000) {
+          this.claimCountDown = Math.floor(this.nextClaimTime[this.poolId] - Date.now() / 1000);
+          this.claimCountdownTimer();
+        }
+      }
     }
   },
 
@@ -123,6 +158,41 @@ export default {
     ...mapActions(['approve', 'deposit', 'withdraw', 'withdrawAll', 'harvest']),
     getAddLiquidityLink() {
       return "https://app.uniswap.org/"
+    },
+    claimCountdownTimer() {
+      if(this.claimCountDown > 0) {
+        setTimeout(() => {
+            this.claimCountDown -= 1
+            this.claimCountdownTimer()
+        }, 1000)
+      }
+    },
+    calcStakedValue(val) {
+      // input: amount of staked tokens (already divided by 1e18)
+      // output: TVL in dollar
+      var reserveAmount
+      if (this.poolId == 0) {
+        return val * this.coinPrices.filter(item => item.ticker == 'FEI')[0].usd
+      }
+      else if (this.poolId == 1) {
+        const feiIndex = 1 - this.lpData[0].bribeIndex
+        reserveAmount = feiIndex == 0 ? this.lpData[0].reserve0 : this.lpData[0].reserve1
+        reserveAmount *= (val / this.lpData[0].totalSupply) 
+        return 2 * reserveAmount * this.coinPrices.filter(item => item.ticker == 'FEI')[0].usd
+      }
+      else if (this.poolId == 2) {
+        const ethIndex = 1 - this.lpData[1].bribeIndex
+        reserveAmount = ethIndex == 0 ? this.lpData[1].reserve0 : this.lpData[1].reserve1
+        reserveAmount *= (val  / this.lpData[1].totalSupply)
+        return 2 * reserveAmount * this.coinPrices.filter(item => item.ticker == 'ETH')[0].usd
+      }
+      return 0
+    },
+    calcApy() {
+      const annualRewardAmount = this.farmInfo[this.poolId].rewardForDuration / 1e18 * 12 // rewardForDuration is monthly reward
+      const annualRewardValue = annualRewardAmount * this.lpData[0].bribePrice // quote in fei price, treat fei = 1usd, bribePrice is relative price (=reserve0/reserve1)
+      const totalValueLocked = this.calcStakedValue(this.farmInfo[this.poolId].totalStaked / 1e18)
+      return annualRewardValue / totalValueLocked * 100
     },
     doClaim() {
       this.harvest(this.poolId)
@@ -414,14 +484,16 @@ export default {
     overflow: hidden;
     cursor: pointer;
     transition: .2s;
+    border: 2px solid black;
 }
 .btn:hover {
   background: linear-gradient(to top right, #9395f7, #cf9ef0);
+  border: 2px solid #cf9ef0;
 }
 
 .btn.sec {
     background: 0 0;
-    border:2px solid black;
+    // border:2px solid black;
     color: black;
 }
 .btn.sec:hover {
@@ -431,5 +503,24 @@ export default {
 
 .uniswap-msg {
   height: 50px;
+}
+
+.deposit-wrapper {
+  margin-right: 8px;
+}
+.withdraw-wrapper {
+  margin-left: 8px;
+}
+
+// to remove default arrows from input type number
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>

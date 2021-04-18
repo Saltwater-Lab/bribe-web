@@ -9,13 +9,13 @@
           </div>
           <div class="title2 title--small">$BRIBE Tokenomics</div>
           <div class="info__about-text">Bribe Protocol is a firm supporter of fair launch. There is no private sale or VC allocation. BRIBE tokens will be distributed to the community during 12 months starting from the launch date.<br>
-            Total supply: 1,000,000 BRIBE<br>
-            Airdrop to Fei Genesis participants: 60,000 BRIBE<br>
-            Community Airdrop (early supporters, social media campaigns): 5,000 BRIBE<br>
-            Initial LP airdrop: 10,000 BRIBE<br>
-            Reserve for future airdrops: 25,000<br>
+            Total supply: 10,000,000 BRIBE<br>
+            Airdrop to Fei Genesis participants: 600,000 BRIBE<br>
+            Community Airdrop (early supporters, social media campaigns): 50,000 BRIBE<br>
+            Initial LP airdrop: 100,000 BRIBE<br>
+            Reserve for future airdrops: 250,000<br>
             <br>
-            100,000 BRIBE farming rewards will be distributed during the first month.<br>
+            1,000,000 BRIBE farming rewards will be distributed during the first month.<br>
             Daily Fei Pool Rewards: 5,000 BRIBE<br>
             Daily Fei-Bribe Pool Rewards: 8,333 BRIBE<br>
             Daily ETH-Bribe Pool Rewards: 20,000 BRIBE<br>
