@@ -12,7 +12,6 @@ function getCoinsPrice () {
       },
       (error, response) => {
         if (error) reject(error)
-        debugger; //eslint-disable-line
         resolve(response.body)
       }
     )

@@ -38,13 +38,13 @@
       </div> -->
 
       <div class="stake-organiser -fx-tab">
-        <small class="left">BRIBE Rewards: <i class="fas fa-dollar-sign"></i><span
-            id="pairRewardsValue">{{ earned[poolId] / 1e18 | amountFormat}}</span></small>
+        <small class="left">BRIBE Rewards: <i class="fas fa-dollar-sign"></i>
+        <span id="pairRewardsValue">{{ earned[poolId] / 1e18 | amountFormat}}</span></small>
         <div v-if="nextClaimTime[poolId]<Date.now()/1000">
           <small @click="doClaim()" class="claim-reward-balance"><i
               class="fas fa-star"></i>&nbsp;Claim</small>
         </div>
-          <small v-else>Claim rewards in {{claimCountDown | timeFormat}}</small>
+        <small v-else class="ml-2">Claim rewards in {{claimCountDown | timeFormat}}</small>
       </div>
 
       
@@ -145,7 +145,9 @@ export default {
           this.claimCountDown = Math.floor(this.nextClaimTime[this.poolId] - Date.now() / 1000);
           this.claimCountdownTimer();
         }
-      }
+      },
+      immediate: true,
+      deep: true
     }
   },
 
@@ -535,5 +537,8 @@ input[type="number"] {
 }
 .max-btn {
   margin-left: -50px;
+}
+.ml-2 {
+  margin-left: 8px;
 }
 </style>
