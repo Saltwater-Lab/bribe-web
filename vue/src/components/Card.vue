@@ -44,9 +44,7 @@
           <small @click="doClaim()" class="claim-reward-balance"><i
               class="fas fa-star"></i>&nbsp;Claim</small>
         </div>
-        <div v-else>
-          <p>Claim rewards in {{claimCountDown | timeFormat}}</p>
-        </div>
+          <small v-else>Claim rewards in {{claimCountDown | timeFormat}}</small>
       </div>
 
       
@@ -58,21 +56,19 @@
       <div v-if="metamaskAccount&&isApproved[poolId]" class="stake-organiser -btn-flex actions"> 
         <div class="deposit-wrapper">
           <input :placeholder="`Amount`" class="deposit__input" v-model="depositAmount" type="number">
+          <small @click="setMaxDeposit()" class="max-btn"><i class="fas fa-star"></i>&nbsp;MAX</small>
             <a class="btn primary" @click="doDeposit()">
               Deposit
             </a>
-            <small @click="setMaxDeposit()" class="max-btn"><i
-            class="fas fa-star"></i>&nbsp;MAX</small>
-
         </div>
 
         <div class="withdraw-wrapper">
           <input :placeholder="`Amount`" class="deposit__input" v-model="withdrawAmount" type="number" v-on:input="onWithdrawAmountChange">
+          <small @click="setMaxWithdraw()" class="max-btn"><i
+            class="fas fa-star"></i>&nbsp;MAX</small>
           <a class="btn sec" @click="doWithdraw()">
             Withdraw
           </a>
-          <small @click="setMaxWithdraw()" class="max-btn"><i
-            class="fas fa-star"></i>&nbsp;MAX</small>
         </div>
 
       </div>
@@ -531,5 +527,13 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+input[type="number"] {
+  padding-right: 55px;
+  margin-left: -10px;
+}
+.max-btn {
+  margin-left: -50px;
 }
 </style>
