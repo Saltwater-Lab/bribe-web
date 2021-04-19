@@ -29,6 +29,8 @@
       </div>
 
       <div class="stake-organiser left">
+        <small>Wallet Balance: <i class="fas fa-dollar-sign"></i><span id="stakedSingle">{{ availableToDeposit[poolId] / 1e18 | amountFormat }}</span></small>
+        <br>
         <small>Your Stake: <i class="fas fa-dollar-sign"></i><span id="stakedSingle">{{ bribeFarmBalance[poolId] / 1e18 | amountFormat }}</span></small>
       </div>
       <!-- <div class="stake-organiser right">
@@ -80,15 +82,12 @@
         </a>
       </div>
 
-      <!--
+      
       <div class="stake-organiser -small-buy-trig-uniswap uniswap-msg">
-        TODO: change href link color
         <span v-if="showUniswapMsg"><a :href="`${getAddLiquidityLink()}`">Provide liquidity to {{ inputType }} pair on Uniswap</a></span>
         <span v-else><a href="https://app.uniswap.org/#/swap?outputCurrency=0x956f47f50a910163d8bf957cf5846d573e7f87ca">Get FEI from Uniswap</a></span>
-        make it a href to app.uniswap.org/add/..... 
-      
       </div>
-      -->
+      
 
       <!-- <div>
         {{isApproved}}
@@ -157,7 +156,12 @@ export default {
   methods: {
     ...mapActions(['approve', 'deposit', 'withdraw', 'withdrawAll', 'harvest']),
     getAddLiquidityLink() {
-      return "https://app.uniswap.org/"
+      if (this.poolId == 1) {
+        return `https://app.uniswap.org/#/add/${process.env.VUE_APP_FEI_ADDRESS}/${process.env.VUE_APP_BRIBE_ADDRESS}`
+      }
+      else if (this.poolId == 2) {
+        return `https://app.uniswap.org/#/add/${process.env.VUE_APP_BRIBE_ADDRESS}/ETH`
+      }
     },
     claimCountdownTimer() {
       if(this.claimCountDown > 0) {
@@ -388,8 +392,8 @@ export default {
 }
 .stake-organiser small,
 .-small-buy-trig-uniswap{
-  font-size: .9rem;
-  font-weight: 500;
+  font-size: .8rem;
+  font-weight: 400;
 }
 .stake-organiser.-fx-tab {
   display: grid;
@@ -503,6 +507,11 @@ export default {
 
 .uniswap-msg {
   height: 50px;
+  bottom: 0;
+}
+
+.uniswap-msg a {
+  color: grey;
 }
 
 .deposit-wrapper {
