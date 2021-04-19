@@ -80,8 +80,8 @@
 
       
       <div class="stake-organiser -small-buy-trig-uniswap uniswap-msg">
-        <span v-if="showUniswapMsg"><a :href="`${getAddLiquidityLink()}`">Provide liquidity to {{ inputType }} pair on Uniswap</a></span>
-        <span v-else><a href="https://app.uniswap.org/#/swap?outputCurrency=0x956f47f50a910163d8bf957cf5846d573e7f87ca">Get FEI from Uniswap</a></span>
+        <span v-if="showUniswapMsg"><a :href="`${getAddLiquidityLink()}`" target="_blank">Provide liquidity to {{ inputType }} pair on Uniswap</a></span>
+        <span v-else><a href="https://app.uniswap.org/#/swap?outputCurrency=0x956f47f50a910163d8bf957cf5846d573e7f87ca" target="_blank">Get FEI from Uniswap</a></span>
       </div>
       
 
