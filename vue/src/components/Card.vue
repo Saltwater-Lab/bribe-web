@@ -104,7 +104,8 @@ export default {
       depositAmount: null,
       withdrawAmount: null,
       withdrawMax: false,
-      claimCountDown: 0
+      claimCountDown: 0,
+      timeoutRef: null
     }
   },
 
@@ -142,6 +143,7 @@ export default {
     nextClaimTime: {
       handler(value) {
         if (value[this.poolId] > Date.now() / 1000) {
+          clearTimeout(this.timeoutRef)
           this.claimCountDown = Math.floor(this.nextClaimTime[this.poolId] - Date.now() / 1000);
           this.claimCountdownTimer();
         }
@@ -163,7 +165,7 @@ export default {
     },
     claimCountdownTimer() {
       if(this.claimCountDown > 0) {
-        setTimeout(() => {
+        this.timeoutRef = setTimeout(() => {
             this.claimCountDown -= 1
             this.claimCountdownTimer()
         }, 1000)
