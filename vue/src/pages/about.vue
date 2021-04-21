@@ -26,7 +26,9 @@
           <div class="title2 title--small">Protocol Fees</div>
           <div class="info__about-text">Fei pool charges 1% withdrawal fee paid in Fei. LP pools do not charge fees. Collected fees will be used to buyback BRIBE in the open market on a weekly basis. The protocol fees can be adjusted or removed by the governance vote of BRIBE holders.</div>
           <div class="title2 title--small">Where can I buy BRIBE?</div>
-          <div class="info__about-text">BRIBE token is not launched yet. Any claims of BRIBE tokens on Uniswap or other exchanges are scams.</div>
+          <div class="info__about-text">BRIBE token address is <u>0x679fa6dc913acab6def33ec469fc6e421bc794f5</u><br>
+            <a href="https://info.uniswap.org/token/0x679fa6dc913acab6def33ec469fc6e421bc794f5"><b>Trade $BRIBE on Uniswap</b></a>
+          </div>
           <!--
           <div class="info__about-text">You can purchase BRIBE on Uniswap. The token address is <a></a></div>
           -->

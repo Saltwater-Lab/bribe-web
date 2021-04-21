@@ -29,8 +29,8 @@
         </div>
         <div class="balance__info">
           <p class="showcase-text">
-            BRIBE token is not launched yet.<br><i class="fas fa-exclamation-triangle"></i>&nbsp;<u>Please beware of
-              scams on Uniswap.</u><br>Official token address will be updated upon token generation
+            BRIBE token address is <u>0x679fa6dc913acab6def33ec469fc6e421bc794f5</u><br>
+              <a href="https://info.uniswap.org/token/0x679fa6dc913acab6def33ec469fc6e421bc794f5"><b>Trade $BRIBE on Uniswap</b></a>
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export default {
     // }
   },
   mounted () {
-    setTimeout(() => this.$bus.$emit('open-notice-modal'), 1000)
+    //setTimeout(() => this.$bus.$emit('open-notice-modal'), 1000)
   },
 
   computed: {
