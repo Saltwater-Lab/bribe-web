@@ -25,9 +25,14 @@
           <div class="info__about-text">100,000 $BRIBE rewards will be shared among early liquidity providers who provide at least 200 BRIBE liquidity to Uniswap FEI-BRIBE or ETH-BRIBE within 72 hours since the launch. Three random snapshots will take place during the first 24 hours, 24~48 hours and 48~72 hours to determine the eligibility. During each time window, 33,333 $BRIBE rewards will be shared. Rewards will be distributed after all snapshots are done. For more details, read our <a href="https://bribeprotocol.medium.com/bribe-protocol-airdrop-details-c2998ccefc23">Medium announcement</a></div>
           <div class="title2 title--small">Protocol Fees</div>
           <div class="info__about-text">Fei pool charges 1% withdrawal fee paid in Fei. LP pools do not charge fees. Collected fees will be used to buyback BRIBE in the open market on a weekly basis. The protocol fees can be adjusted or removed by the governance vote of BRIBE holders.</div>
-          <div class="title2 title--small">Where can I buy BRIBE?</div>
-          <div class="info__about-text">BRIBE token address is <u>0x679fa6dc913acab6def33ec469fc6e421bc794f5</u><br>
-            <a href="https://info.uniswap.org/token/0x679fa6dc913acab6def33ec469fc6e421bc794f5"><b>Trade $BRIBE on Uniswap</b></a>
+          <div class="title2 title--small">Contract Addresses</div>
+          <div class="info__about-text">BRIBE token address <u>0x679fa6dc913acab6def33ec469fc6e421bc794f5</u><br>
+            FEI farming pool <u>0x49783C67d6c681A1FF5Ff250dc5338051B1D42A1</u><br>
+            BRIBE-FEI farming pool <u>0x81b0Aad91F4cc7060d7d20d40d255691C926fFad</u><br>
+            BRIBE-ETH farming pool <u>0x29ACc7D4AbB3c13Dc25Aaf38e61859eEfC9D4D43</u><br>
+            <a href="https://info.uniswap.org/token/0x679fa6dc913acab6def33ec469fc6e421bc794f5"><b>Trade $BRIBE on Uniswap</b></a><br>
+            <a href="https://info.uniswap.org/pair/0x25a390d8c76935426dda2668cb9cefd4ec0205b2"><b>Provide Liquidity to Uniswap BRIBE-FEI Pair</b></a><br>
+            <a href="https://info.uniswap.org/pair/0x8098c4266a5aa0355d2d37461323db3f949cb156"><b>Provide Liquidity to Uniswap BRIBE-ETH Pair</b></a>
           </div>
           <!--
           <div class="info__about-text">You can purchase BRIBE on Uniswap. The token address is <a></a></div>
