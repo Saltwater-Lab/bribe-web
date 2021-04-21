@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
           // eslint-disable-next-line no-unused-vars
-import { createERC20Contract, createBribeTokenContract, createFarmContracts, createUniswapPairContract } from '../utils/contract';
+import { createERC20Contract, createBribeTokenContract, createFarmContracts, createUniswapPairContract, createAirdropContract } from '../utils/contract';
 import WalletModule from './WalletModule';
 import MetamaskConnector from '@/utils/MetamaskConnector.js'
 import api from '@/api'
@@ -17,7 +17,7 @@ export default new Vuex.Store({
   state: {
     metamaskConnector: null,
     bribeToken: null,
-    graph: null,
+    airdropDistributor: null,
     farmContracts: [], // 3 pools
     stakeTokens: [], // 3 tokens 
     farmInfo: [
@@ -39,6 +39,7 @@ export default new Vuex.Store({
     ],
 
     // user specific data
+    isAirdropClaimed: false,
     metamaskAccount: null,
     bribeBalance: 0,
     isApproved: [null, null, null],
@@ -74,6 +75,14 @@ export default new Vuex.Store({
 
     setFarmContracts(state, payload) {
       state.farmContracts = payload
+    },
+
+    setAirdropDistributor(state, payload) {
+      state.airdropDistributor = payload
+    },
+
+    setIsAirdropClaimed(state, payload) {
+      state.isAirdropClaimed = payload
     },
 
     setBribeToken(state, payload) {
@@ -159,6 +168,8 @@ export default new Vuex.Store({
           createERC20Contract(process.env.VUE_APP_FEI_BRIBE_LP_ADDRESS),
           createERC20Contract(process.env.VUE_APP_ETH_BRIBE_LP_ADDRESS)
         ])
+
+        commit('setAirdropDistributor', createAirdropContract());
 
         
         // fetch fei and eth prices
@@ -290,6 +301,7 @@ export default new Vuex.Store({
             await state.farmContracts[1].methods.balanceOf(state.metamaskAccount).call(),
             await state.farmContracts[2].methods.balanceOf(state.metamaskAccount).call(),
           ]);
+
         }
         console.log("user bribe balance", state.bribeBalance)
         console.log("isApproved", state.isApproved)
@@ -370,6 +382,28 @@ export default new Vuex.Store({
       // xhr.open("POST", "https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2", true);
       // let data = "{\"operationName\":\"tokens\",\"variables\":{},\"query\":\"fragment TokenFields on Token {\\n  id\\n  name\\n  symbol\\n  derivedETH\\n  tradeVolume\\n  tradeVolumeUSD\\n  untrackedVolumeUSD\\n  totalLiquidity\\n  txCount\\n  __typename\\n}\\n\\nquery tokens {\\n  tokens(where: {id: \\\"0xa31b1767e09f842ecfd4bc471fe44f830e3891aa\\\"}) {\\n    ...TokenFields\\n    __typename\\n  }\\n  pairs0: pairs(where: {token0: \\\"0xa31b1767e09f842ecfd4bc471fe44f830e3891aa\\\"}, first: 50, orderBy: reserveUSD, orderDirection: desc) {\\n    id\\n    __typename\\n  token0 {\\n    id\\n    symbol\\n    name\\n    totalLiquidity\\n    derivedETH\\n    __typename\\n  }\\n  token1 {\\n    id\\n    symbol\\n    name\\n    totalLiquidity\\n    derivedETH\\n    __typename\\n  }}\\n}\\n\"}"
       // xhr.send(data);
+    },
+
+    async claimAirdrop({ state, dispatch }, args) {
+      var [index, amount, proof] = args
+      if (!state.metamaskAccount) {
+        Vue.prototype.$bus.$emit('open-wallet-modal');
+        return
+      }
+      if (state.airdropDistributor) {
+        Vue.prototype.$toasted.success('Please wait for the transaction', { duration: 0 });
+        console.log(index, state.metamaskAccount, amount, proof)
+        const res = await state.airdropDistributor.methods.claim(index, state.metamaskAccount, amount, proof)
+          .send({from: state.metamaskAccount})
+        Vue.prototype.$toasted.clear();
+        if (res.status) {
+          Vue.prototype.$toasted.success('Transaction confirmed!', { duration: 5000 });
+          dispatch('getUserData');
+        }
+      } else {
+        Vue.prototype.$toasted.clear();
+        Vue.prototype.$toasted.error(`Bribe Farm: the contract is not connected`, { duration: 5000 });
+      }
     },
 
     async harvest({ state, dispatch }, poolId) {

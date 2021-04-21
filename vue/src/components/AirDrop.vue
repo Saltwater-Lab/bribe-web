@@ -22,7 +22,7 @@
         <div class="stats">
           <span class="stat -pc">
             <span id="tokenBalance">
-              {{metamaskAccount ? bribeBalance : 'Locked'}}
+              {{metamaskAccount ? amountFormat(bribeBalance / 1e18): 'Locked'}}
               </span><i class="-m-l">BRIBE</i></span>
           <small>BRIBE Balance</small>
         </div>
@@ -31,7 +31,7 @@
       <div class="stake-organiser -btn-flex">
       
         <a v-if="metamaskAccount" class="btn primary" @click="doClaim()">
-          Not Claimable
+          {{ this.claimableBribe > 0 && !this.isClaimed ? 'Claim' : 'Not Claimable'}}
         </a>
         <a v-else class="btn primary" @click="connectAccount">
           Unlock
@@ -50,43 +50,56 @@
 import {mapState, mapActions} from 'vuex'
 import api from '@/api'
 import web3 from 'web3'
+import formatter from '@/utils/amountFormatter'
 
 export default {
   name: 'AirDrop',
   data () {
     return {
-      bribeBalance: 0,
-      claimableBribe: 0
+      claimableBribe: 0,
+      proof: null,
+      hexAmount: null,
+      index: null,
+      isClaimed: true
     }
   },
   computed: {
-    ...mapState(['metamaskAccount'])
+    ...mapState(['metamaskAccount', 'airdropDistributor', 'bribeBalance'])
   },
   watch: {
     metamaskAccount: {
       handler (address) {
-        console.log("address:", address)
         this.getAirDropData(address)
       },
       immediate: true
     }
   },
   methods: {
-    ...mapActions(['connectAccount']),
+    ...mapActions(['connectAccount', 'claimAirdrop']),
     async getAirDropData (address) {
       if(!address) return;
       const checksum = await web3.utils.toChecksumAddress(address);
-      console.log('checksum', checksum)
       const response = await api.checkAirDropStatus(checksum)
       if (response === null) {
         this.claimableBribe = 0
       } else {
-        this.claimableBribe = response.decimalAmount
+        this.proof = response.proof
+        this.hexAmount = response.amount
+        this.index = response.index
+        this.isClaimed = await this.airdropDistributor.methods.isClaimed(this.index).call()
+        this.claimableBribe = this.isClaimed ? 0 : response.decimalAmount
       }
       console.log(response)
     },
-    doClaim() {
-
+    async doClaim() {
+      if (this.claimableBribe > 0 && !this.isClaimed) {
+        await this.claimAirdrop([this.index, this.hexAmount, this.proof])
+        this.isClaimed = await this.airdropDistributor.methods.isClaimed(this.index).call()
+        this.claimableBribe = this.isClaimed ? 0 : this.claimableBribe
+      }
+    },
+    amountFormat (val) {
+      return formatter.format(val)
     }
   }
 }
