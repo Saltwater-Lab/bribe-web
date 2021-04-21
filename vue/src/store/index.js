@@ -56,8 +56,8 @@ export default new Vuex.Store({
 
     // uniswap pair data
     lpData: [
-      { name: 'FEI-BRIBE', address: process.env.VUE_APP_FEI_BRIBE_LP_ADDRESS },
-      { name: 'ETH-BRIBE', address: process.env.VUE_APP_ETH_BRIBE_LP_ADDRESS }
+      { name: 'BRIBE-FEI', address: process.env.VUE_APP_FEI_BRIBE_LP_ADDRESS },
+      { name: 'BRIBE-ETH', address: process.env.VUE_APP_ETH_BRIBE_LP_ADDRESS }
     ],
 
 

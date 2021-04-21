@@ -24,8 +24,8 @@
       <div class="balance">
         <div class="balance__inner cards-row">
           <Card title="FEI Pool" pool-id=0 input-type="FEI" farm-link="/farming_pancake" currency-icon="/pics/fei.png" currency-icon2="" daily-pool="25 000" :finished="false" />
-          <Card title="FEI-BRIBE LP Pool" pool-id=1 input-type="FEI-BRIBE" farm-link="/farming_bnb" top-icon="/pics/fei.png" currency-icon="/pics/fei.png" currency-icon2="/pics/bribe.png" daily-pool="25 000" />
-          <Card title="ETH-BRIBE LP Pool" pool-id=2 input-type="BRIBE-ETH" farm-link="/farming_burger" top-icon="/pics/bribe.png" currency-icon="/pics/bribe.png" currency-icon2="/pics/eth.png" daily-pool="25 000" />
+          <Card title="BRIBE-FEI LP Pool" pool-id=1 input-type="BRIBE-FEI" farm-link="/farming_bnb" top-icon="/pics/fei.png" currency-icon="/pics/fei.png" currency-icon2="/pics/bribe.png" daily-pool="25 000" />
+          <Card title="BRIBE-ETH LP Pool" pool-id=2 input-type="BRIBE-ETH" farm-link="/farming_burger" top-icon="/pics/bribe.png" currency-icon="/pics/bribe.png" currency-icon2="/pics/eth.png" daily-pool="25 000" />
         </div>
         <div class="balance__info">
           <p class="showcase-text">
