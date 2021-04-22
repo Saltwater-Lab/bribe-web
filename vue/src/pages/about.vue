@@ -34,6 +34,10 @@
             <a href="https://info.uniswap.org/pair/0x25a390d8c76935426dda2668cb9cefd4ec0205b2"><b>Provide Liquidity to Uniswap BRIBE-FEI Pair</b></a><br>
             <a href="https://info.uniswap.org/pair/0x8098c4266a5aa0355d2d37461323db3f949cb156"><b>Provide Liquidity to Uniswap BRIBE-ETH Pair</b></a>
           </div>
+          
+          <div class="info__about-text">
+            Protocol is built on top of  audited code. Bribe Protocol uses the industry standard staking contract forked from Float Protocol which is another fork from Synthetix. Token contract is standard OpenZepplin contract.  However, it is still an experimental software. Use at your own risk! 
+          </div>
           <!--
           <div class="info__about-text">You can purchase BRIBE on Uniswap. The token address is <a></a></div>
           -->
