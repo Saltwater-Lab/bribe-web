@@ -229,7 +229,7 @@ export default {
       this.approve(this.poolId);
     },
     setMaxDeposit() {
-      this.depositAmount = this.availableToDeposit[this.poolId] / 1e18 - 0.00000001
+      this.depositAmount = Math.max(this.availableToDeposit[this.poolId] / 1e18 - 0.00000001, 0.0)
     },
     setMaxWithdraw() {
       this.withdrawAmount = this.bribeFarmBalance[this.poolId] / 1e18;
