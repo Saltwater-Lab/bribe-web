@@ -5,18 +5,23 @@
         <img src="../assets/images/cat.png" alt="">
       </div> -->
       <div class="title heading">BRIBE FARM</div>
+
+      <div class="total-staked">
+        <h2 class="title"> <span>Total Staked:</span> {{totalStaked | dollarAmountFormat}}</h2>
+      </div>
+      
       <div class="farm-data subheading">
         <!-- <div class="farm-data__item">
           <h2 class="title">Est. APY</h2>
-          <span class="value">{{ toFixedTwo(apy) }} %</span>
-        </div>
-        <div class="farm-data__item">
+          <span class="value">{{ '123APY' }} %</span>
+        </div> -->
+        <!-- <div class="farm-data__item">
           <h2 class="title">Total LPs BRIBE/ETH Staked</h2>
-          <span class="value">{{ toFixedTwo(roobeeFarmSupply / 1e18) }}</span>
-        </div>
-        <div class="farm-data__item">
+          <span class="value">{{ '12341243$' }}</span>
+        </div> -->
+        <!-- <div class="farm-data__item">
           <h2 class="title">Daily BRIBE Pool Rewards</h2>
-          <span class="value">{{ numberWithSpaces(toFixedTwo(rewardPerBlock * 5760 * 15 / 1e18)) }}</span>
+          <span class="value">{{ 'asdf' }}</span>
         </div> -->
         BRIBE is a cross-chain liquidity farm for algorithmic stablecoins
       </div>
@@ -50,6 +55,7 @@ import WithdrawModal from "@/components/WithdrawModal";
 import Card from '@/components/Card';
 import CoinsRow from '@/components/CoinsRow';
 import toFixedTwo from '@/utils/toFixedTwo';
+import formatter from '@/utils/amountFormatter'
 
 export default {
   name: "farming",
@@ -81,8 +87,21 @@ export default {
   },
 
   computed: {
-    ...mapState(['roobeeBalance', 'roobeeFarmSupply', 'earned', 'rewardPerBlock', 'isApproved', 'firstEnter', 'roobeeFarmBalance', 'metamaskAccount']),
-    ...mapGetters(['apy'])
+    ...mapState(['farmInfo', 'isApproved', 'firstEnter', 'roobeeFarmBalance', 'metamaskAccount', 'coinPrices', 'lpData']),
+    ...mapGetters(['apy']),
+    totalStaked () {
+      const total = this.farmInfo.reduce((sum, acc, index) => {
+        sum += this.calcStakedValue((acc.totalStaked)/1e18, index)
+        return sum
+      }, 0)
+      return total
+    }
+  },
+
+  filters: {
+    dollarAmountFormat (val) {
+      return isNaN(val) ? '---' : '$'+formatter.format(val)
+    }
   },
 
   methods: {
@@ -104,14 +123,36 @@ export default {
 
     toFixedTwo(num) {
       return toFixedTwo(num)
+    },
+
+    calcStakedValue(val, poolId) {
+      // input: amount of staked tokens (already divided by 1e18)
+      // output: TVL in dollar
+      var reserveAmount
+      if (poolId == 0) {
+        return val * this.coinPrices.filter(item => item.ticker == 'FEI')[0].usd
+      }
+      else if (poolId == 1) {
+        const feiIndex = 1 - this.lpData[0].bribeIndex
+        reserveAmount = feiIndex == 0 ? this.lpData[0].reserve0 : this.lpData[0].reserve1
+        reserveAmount *= (val / this.lpData[0].totalSupply) 
+        return 2 * reserveAmount * this.coinPrices.filter(item => item.ticker == 'FEI')[0].usd
+      }
+      else if (poolId == 2) {
+        const ethIndex = 1 - this.lpData[1].bribeIndex
+        reserveAmount = ethIndex == 0 ? this.lpData[1].reserve0 : this.lpData[1].reserve1
+        reserveAmount *= (val  / this.lpData[1].totalSupply)
+        return 2 * reserveAmount * this.coinPrices.filter(item => item.ticker == 'ETH')[0].usd
+      }
+      return 0
     }
   }
 }
 
 </script>
-<style scoped>
+<style scoped lang="scss">
 .heading {
-  
+  padding: 0;
   font-family: Roboto-Bold;
   font-weight:500;
   font-size: 56px;
@@ -126,5 +167,18 @@ export default {
 }
 .cards-row {
   align-items: stretch;
+}
+
+.total-staked {
+  text-align: center;
+  font-family: "Geometria";
+  font-weight: 600;
+  background-image: linear-gradient(255deg ,#b6509e 25%,#2ebac6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 28px;
+  .title {
+    padding: 0;
+  }
 }
 </style>
