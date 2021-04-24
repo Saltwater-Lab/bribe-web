@@ -22,7 +22,16 @@
           </div>
           
           <div class="title2 title--small">Initial LP Airdrop Rules</div>
-          <div class="info__about-text">100,000 $BRIBE rewards will be shared among early liquidity providers who provide at least 200 BRIBE liquidity to Uniswap FEI-BRIBE or ETH-BRIBE within 72 hours since the launch. Three random snapshots will take place during the first 24 hours, 24~48 hours and 48~72 hours to determine the eligibility. During each time window, 33,333 $BRIBE rewards will be shared. Rewards will be distributed after all snapshots are done. For more details, read our <a href="https://bribeprotocol.medium.com/bribe-protocol-airdrop-details-c2998ccefc23">Medium announcement</a></div>
+          <div class="info__about-text">100,000 $BRIBE rewards will be shared among early liquidity providers who provide at least 200 BRIBE liquidity to Uniswap FEI-BRIBE or ETH-BRIBE within 1 week since the launch. <br>
+          Day 1: 33,333 $BRIBE <br>
+          Day 2: 11,111 $BRIBE <br>
+          Day 3: 11,111 $BRIBE <br>
+          Day 4: 11,111 $BRIBE <br>
+          Day 5: 11,111 $BRIBE <br>
+          Day 6: 11,111 $BRIBE <br>
+          Day 7: 11,111 $BRIBE <br>
+          Random snapshots will happen on each day to determine the eligibility.
+          </div>
           <div class="title2 title--small">Protocol Fees</div>
           <div class="info__about-text">Fei pool charges 1% withdrawal fee paid in Fei. LP pools do not charge fees. Collected fees will be used to buyback BRIBE in the open market on a weekly basis. The protocol fees can be adjusted or removed by the governance vote of BRIBE holders.</div>
           <div class="title2 title--small">Contract Addresses</div>
