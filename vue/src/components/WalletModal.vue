@@ -14,7 +14,13 @@
             </div>
             <div class="wallet-item__title">Metamask</div>
             <div class="wallet-item__button">
-              <button class="button button button--small" :class="{'button': metamaskAccount}" @click="connectAccount">{{ metamaskAccount ? metamaskAccount : (metamaskConnector && metamaskConnector.status == 'NOT_INSTALLED' ? 'Install' : 'Connect') }}
+              <button
+                class="button button button--small" 
+                :class="{'button': metamaskAccount}"
+                @click="connectAccount">
+                {{ metamaskAccount ? minifiedAccount : 
+                   (metamaskConnector && metamaskConnector.status == 'NOT_INSTALLED' ? 'Install' : 'Connect')
+                }}
               </button>
             </div>
           </div>
@@ -57,7 +63,11 @@ export default {
   },
 
   computed: {
-    ...mapState(['metamaskAccount', 'metamaskConnector'])
+    ...mapState(['metamaskAccount', 'metamaskConnector']),
+    minifiedAccount () {
+      if (this.metamaskAccount) return `${this.metamaskAccount.substring(0, 6 + 2)}...${this.metamaskAccount.substring(42 - 6)}`
+      return null
+    }
   },
 
   methods: {
