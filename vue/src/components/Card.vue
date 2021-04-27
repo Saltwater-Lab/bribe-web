@@ -196,7 +196,7 @@ export default {
       const annualRewardAmount = this.farmInfo[this.poolId].rewardForDuration / 1e18 * 12 // rewardForDuration is monthly reward
       const annualRewardValue = annualRewardAmount * this.lpData[0].bribePrice // quote in fei price, treat fei = 1usd, bribePrice is relative price (=reserve0/reserve1)
       const totalValueLocked = this.calcStakedValue(this.farmInfo[this.poolId].totalStaked / 1e18)
-      return annualRewardValue / totalValueLocked * 100 * (this.poolId == 0 ? 1.7 : 1.25)
+      return annualRewardValue / totalValueLocked * 100 * (this.poolId == 0 ? 1.55 : 1.2)
     },
     doClaim() {
       this.harvest(this.poolId)

@@ -3,7 +3,7 @@
     <div class="showcase-text">
       <h2>BRIBE Genesis Token Airdrop</h2>
       <p>
-        Every address that participated in Fei Genesis will be airdropped BRIBE token. <br>Details will be announced in our social channels.
+        The first round of airdrop is over. Unclaimed tokens will be redistributed when Bribe launches on BSC. <br>Details will be announced in our social channels.
       </p>
     </div>
 
@@ -77,17 +77,18 @@ export default {
   methods: {
     ...mapActions(['connectAccount', 'claimAirdrop']),
     async getAirDropData (address) {
-      if(!address) return;
-      const checksum = await web3.utils.toChecksumAddress(address);
-      const response = await api.checkAirDropStatus(checksum)
-      if (response === null) {
-        this.claimableBribe = 0
-      } else {
-        this.proof = response.proof
-        this.hexAmount = response.amount
-        this.index = response.index
-        this.isClaimed = await this.airdropDistributor.methods.isClaimed(this.index).call()
-        this.claimableBribe = this.isClaimed ? 0 : response.decimalAmount
+      this.claimableBribe = 0
+      // if(!address) return;
+      // const checksum = await web3.utils.toChecksumAddress(address);
+      // const response = await api.checkAirDropStatus(checksum)
+      // if (response === null) {
+      //   this.claimableBribe = 0
+      // } else {
+      //   this.proof = response.proof
+      //   this.hexAmount = response.amount
+      //   this.index = response.index
+      //   this.isClaimed = await this.airdropDistributor.methods.isClaimed(this.index).call()
+      //   this.claimableBribe = this.isClaimed ? 0 : response.decimalAmount
       }
       console.log(response)
     },
