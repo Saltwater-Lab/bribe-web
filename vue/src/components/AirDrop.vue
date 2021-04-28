@@ -89,8 +89,8 @@ export default {
       //   this.index = response.index
       //   this.isClaimed = await this.airdropDistributor.methods.isClaimed(this.index).call()
       //   this.claimableBribe = this.isClaimed ? 0 : response.decimalAmount
-      }
-      console.log(response)
+      // }
+      // console.log(response)
     },
     async doClaim() {
       if (this.claimableBribe > 0 && !this.isClaimed) {
